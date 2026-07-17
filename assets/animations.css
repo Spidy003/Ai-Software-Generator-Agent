@@ -1,0 +1,361 @@
+/* ═══════════════════════════════════════════════════════════════════════
+   ANIMATIONS CSS — Micro-interactions, Keyframes, Entry Animations
+   ═══════════════════════════════════════════════════════════════════════ */
+
+/* ─── RIPPLE EFFECT ─────────────────────────────────────────────────── */
+.ripple-container {
+  position: relative;
+  overflow: hidden;
+}
+
+.ripple {
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.15);
+  transform: scale(0);
+  animation: rippleEffect 0.6s linear;
+  pointer-events: none;
+}
+
+@keyframes rippleEffect {
+  to { transform: scale(4); opacity: 0; }
+}
+
+/* ─── ANIMATED BORDER GLOW ──────────────────────────────────────────── */
+.animated-border {
+  position: relative;
+}
+
+.animated-border::after {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(
+    var(--angle, 0deg),
+    #5B8CFF, #7A5CFF, #00F5FF, #5B8CFF
+  );
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  animation: rotateBorder 4s linear infinite;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.animated-border:hover::after {
+  opacity: 1;
+}
+
+@keyframes rotateBorder {
+  to { --angle: 360deg; }
+}
+
+@property --angle {
+  syntax: '<angle>';
+  initial-value: 0deg;
+  inherits: false;
+}
+
+/* ─── CARD FLOAT ANIMATION ──────────────────────────────────────────── */
+.float-card {
+  animation: cardFloat 6s ease-in-out infinite;
+}
+
+@keyframes cardFloat {
+  0%, 100% { transform: translateY(0px); }
+  50%       { transform: translateY(-8px); }
+}
+
+/* ─── SHIMMER EFFECT ────────────────────────────────────────────────── */
+.shimmer {
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255,255,255,0.04) 40%,
+    rgba(255,255,255,0.08) 50%,
+    rgba(255,255,255,0.04) 60%,
+    transparent 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmerSlide 2s linear infinite;
+}
+
+@keyframes shimmerSlide {
+  from { background-position: -200% 0; }
+  to   { background-position: 200% 0; }
+}
+
+/* ─── SCROLL REVEAL ─────────────────────────────────────────────────── */
+.reveal-on-scroll {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.reveal-on-scroll.revealed {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.reveal-on-scroll.delay-100 { transition-delay: 0.1s; }
+.reveal-on-scroll.delay-200 { transition-delay: 0.2s; }
+.reveal-on-scroll.delay-300 { transition-delay: 0.3s; }
+.reveal-on-scroll.delay-400 { transition-delay: 0.4s; }
+.reveal-on-scroll.delay-500 { transition-delay: 0.5s; }
+
+/* ─── STAGGER CHILDREN ──────────────────────────────────────────────── */
+.stagger-children > * {
+  opacity: 0;
+  transform: translateY(20px);
+  animation: staggerItem 0.5s ease forwards;
+}
+
+.stagger-children > *:nth-child(1) { animation-delay: 0.05s; }
+.stagger-children > *:nth-child(2) { animation-delay: 0.1s; }
+.stagger-children > *:nth-child(3) { animation-delay: 0.15s; }
+.stagger-children > *:nth-child(4) { animation-delay: 0.2s; }
+.stagger-children > *:nth-child(5) { animation-delay: 0.25s; }
+.stagger-children > *:nth-child(6) { animation-delay: 0.3s; }
+
+@keyframes staggerItem {
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ─── GLOW PULSE ────────────────────────────────────────────────────── */
+.glow-pulse-blue {
+  animation: glowPulseBlue 3s ease-in-out infinite;
+}
+
+@keyframes glowPulseBlue {
+  0%, 100% { box-shadow: 0 0 20px rgba(91,140,255,0.2); }
+  50%       { box-shadow: 0 0 40px rgba(91,140,255,0.5), 0 0 60px rgba(91,140,255,0.2); }
+}
+
+/* ─── TYPING CURSOR ─────────────────────────────────────────────────── */
+.typing-cursor::after {
+  content: '|';
+  color: var(--primary);
+  animation: cursorBlink 1s step-end infinite;
+}
+
+@keyframes cursorBlink {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0; }
+}
+
+/* ─── SCALE ON HOVER ────────────────────────────────────────────────── */
+.hover-scale {
+  transition: transform 0.2s cubic-bezier(0.34,1.56,0.64,1);
+}
+
+.hover-scale:hover { transform: scale(1.05); }
+
+/* ─── SLIDE IN ANIMATIONS ───────────────────────────────────────────── */
+.slide-in-left {
+  animation: slideInLeft 0.4s cubic-bezier(0.34,1.56,0.64,1) forwards;
+}
+
+@keyframes slideInLeft {
+  from { opacity: 0; transform: translateX(-24px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+.slide-in-right {
+  animation: slideInRight 0.4s cubic-bezier(0.34,1.56,0.64,1) forwards;
+}
+
+@keyframes slideInRight {
+  from { opacity: 0; transform: translateX(24px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+.slide-in-bottom {
+  animation: slideInBottom 0.4s cubic-bezier(0.34,1.56,0.64,1) forwards;
+}
+
+@keyframes slideInBottom {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ─── FADE TRANSITIONS ──────────────────────────────────────────────── */
+.fade-transition {
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.fade-transition.hidden {
+  opacity: 0;
+  pointer-events: none;
+  transform: scale(0.98);
+}
+
+/* ─── SCAN LINE EFFECT ──────────────────────────────────────────────── */
+.scan-lines::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0,0,0,0.03) 2px,
+    rgba(0,0,0,0.03) 4px
+  );
+  pointer-events: none;
+}
+
+/* ─── GRADIENT BORDER BUTTON ────────────────────────────────────────── */
+.gradient-border-btn {
+  position: relative;
+  background: transparent;
+  border: none;
+  padding: 2px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
+}
+
+.gradient-border-btn-inner {
+  background: var(--bg-primary);
+  border-radius: 8px;
+  padding: 10px 20px;
+  color: var(--text-primary);
+  font-weight: 600;
+  font-size: 0.9rem;
+  transition: background 0.2s ease;
+}
+
+.gradient-border-btn:hover .gradient-border-btn-inner {
+  background: rgba(91,140,255,0.08);
+}
+
+/* ─── NEON TEXT ─────────────────────────────────────────────────────── */
+.neon-text {
+  color: var(--accent);
+  text-shadow:
+    0 0 10px rgba(0,245,255,0.5),
+    0 0 20px rgba(0,245,255,0.3),
+    0 0 40px rgba(0,245,255,0.1);
+}
+
+/* ─── LOADING BAR ───────────────────────────────────────────────────── */
+.loading-bar-track {
+  width: 280px;
+  height: 3px;
+  background: rgba(255,255,255,0.06);
+  border-radius: 100px;
+  overflow: hidden;
+}
+
+.loading-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--primary), var(--accent));
+  border-radius: 100px;
+  transition: width 0.4s ease;
+  animation: loadingPulse 2s ease-in-out infinite;
+}
+
+@keyframes loadingPulse {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.7; }
+}
+
+/* ─── ICON SPIN ─────────────────────────────────────────────────────── */
+.spin {
+  animation: iconSpin 1s linear infinite;
+}
+
+@keyframes iconSpin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+/* ─── BOUNCE IN ─────────────────────────────────────────────────────── */
+.bounce-in {
+  animation: bounceIn 0.5s cubic-bezier(0.34,1.56,0.64,1) forwards;
+}
+
+@keyframes bounceIn {
+  from { opacity: 0; transform: scale(0.7); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+/* ─── ACTIVE TAB UNDERLINE ──────────────────────────────────────────── */
+.active-underline {
+  position: relative;
+}
+
+.active-underline::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--primary), var(--accent));
+  border-radius: 1px 1px 0 0;
+  transform: scaleX(0);
+  transition: transform 0.25s ease;
+}
+
+.active-underline.active::after,
+.active-underline:hover::after {
+  transform: scaleX(1);
+}
+
+/* ─── STATUS BADGE PULSE ────────────────────────────────────────────── */
+.status-badge-active {
+  position: relative;
+}
+
+.status-badge-active::before {
+  content: '';
+  position: absolute;
+  inset: -4px;
+  border-radius: 50%;
+  background: var(--success);
+  opacity: 0.3;
+  animation: statusRipple 2s ease-out infinite;
+}
+
+@keyframes statusRipple {
+  from { transform: scale(0.8); opacity: 0.4; }
+  to   { transform: scale(1.8); opacity: 0; }
+}
+
+/* ─── TOOLTIP ───────────────────────────────────────────────────────── */
+[data-tooltip] {
+  position: relative;
+}
+
+[data-tooltip]::before {
+  content: attr(data-tooltip);
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 5px 10px;
+  border-radius: 6px;
+  background: rgba(15,20,40,0.95);
+  color: var(--text-primary);
+  font-size: 0.72rem;
+  font-weight: 500;
+  white-space: nowrap;
+  border: 1px solid var(--border-color);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.15s ease;
+  z-index: 1000;
+}
+
+[data-tooltip]:hover::before { opacity: 1; }
+
+/* ─── SMOOTH PAGE TRANSITION ────────────────────────────────────────── */
+.page-enter {
+  animation: pageEnter 0.4s ease forwards;
+}
+
+@keyframes pageEnter {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
