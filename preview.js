@@ -11,6 +11,12 @@ const PreviewManager = (() => {
   function buildPreviewHTML(project) {
     const files = project.files || [];
 
+    // Check if React / TSX project
+    const hasTsx = files.some(f => f.name.endsWith('.tsx') || f.name.endsWith('.ts') || f.name.includes('vite.config'));
+    if (hasTsx) {
+      return buildViteReactPreviewHTML(project.project_name);
+    }
+
     // Map filename -> code for quick lookup
     const fileMap = {};
     files.forEach(f => {
@@ -135,6 +141,59 @@ const PreviewManager = (() => {
     <h1>${(projectName||'Project').replace(/</g,'&lt;')} — Generated!</h1>
     <p>No HTML file found for live preview.<br/>Switch to <strong>Code</strong> view to browse the files.</p>
     <div class="tip">💡 Projects without an index.html can't be previewed directly.</div>
+  </div>
+</body>
+</html>`;
+  }
+
+  function buildViteReactPreviewHTML(projectName) {
+    return `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:#050816;color:#E2E8F0;
+      min-height:100vh;display:flex;align-items:center;justify-content:center;
+      padding:32px;text-align:center}
+    .container{max-width:540px;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.08);
+      border-radius:18px;padding:36px;backdrop-filter:blur(20px);box-shadow:0 12px 40px rgba(0,0,0,0.5)}
+    .icon{font-size:3.5rem;margin-bottom:20px;display:inline-block;animation:float 4s ease-in-out infinite}
+    @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+    h1{font-size:1.5rem;font-weight:700;margin-bottom:12px;color:#E1E0CC;background:linear-gradient(135deg, #5B8CFF, #7A5CFF);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+    p{color:#9AA4C7;font-size:.92rem;line-height:1.6;margin-bottom:24px}
+    .steps{text-align:left;background:rgba(0,0,0,0.3);border-radius:10px;padding:18px 24px;border:1px solid rgba(255,255,255,0.05);margin-bottom:24px}
+    .steps h3{font-size:0.85rem;text-transform:uppercase;letter-spacing:0.05em;color:#5B8CFF;margin-bottom:10px}
+    .steps ol{padding-left:18px;font-size:0.88rem;color:#E2E8F0}
+    .steps li{margin-bottom:8px}
+    .steps code{font-family:monospace;background:rgba(255,255,255,0.08);padding:2px 6px;border-radius:4px;color:#00F5FF;font-size:0.85rem}
+    .tip{padding:12px 18px;border-radius:10px;
+      background:rgba(91,140,255,.05);border:1px solid rgba(91,140,255,.15);
+      font-size:.82rem;color:#5B8CFF;line-height:1.5;text-align:left}
+    .tip-title{font-weight:700;margin-bottom:4px;display:flex;align-items:center;gap:6px}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="icon">⚛️</div>
+    <h1>React &amp; Vite Project Generated!</h1>
+    <p>This codebase is set up as a standard React + TypeScript project. Because browsers cannot natively run TypeScript/TSX without a build compilation step, it cannot be rendered directly in the static preview window.</p>
+    
+    <div class="steps">
+      <h3>🚀 How to Run Locally</h3>
+      <ol>
+        <li>Click the <strong>Download ZIP</strong> button at the top right to download the project.</li>
+        <li>Extract the archive on your computer.</li>
+        <li>Open a terminal in the project directory and run:</li>
+        <code>npm install &amp;&amp; npm run dev</code>
+      </ol>
+    </div>
+
+    <div class="tip">
+      <div class="tip-title">💡 Want to preview it here instantly?</div>
+      Ask the AI: <em>"Convert this project to vanilla HTML/CSS/JS so I can preview it here"</em> and it will write browser-executable code!
+    </div>
   </div>
 </body>
 </html>`;
