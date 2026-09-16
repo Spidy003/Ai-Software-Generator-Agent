@@ -6,7 +6,7 @@
 
 const ThemeManager = (() => {
   const STORAGE_KEY = 'aisg-theme';
-  const DARK  = 'dark-theme';
+  const DARK = 'dark-theme';
   const LIGHT = 'light-theme';
 
   let currentTheme = DARK;
@@ -24,13 +24,13 @@ const ThemeManager = (() => {
     body.classList.add(theme);
     currentTheme = theme;
 
-    // Update toggle icon
-    const sunIcon  = document.querySelector('.icon-sun');
-    const moonIcon = document.querySelector('.icon-moon');
-    if (sunIcon && moonIcon) {
-      sunIcon.style.display  = theme === DARK  ? 'block' : 'none';
-      moonIcon.style.display = theme === LIGHT ? 'block' : 'none';
-    }
+    // Update all toggle icons
+    document.querySelectorAll('.icon-sun').forEach(el => {
+      el.style.display = theme === DARK ? 'block' : 'none';
+    });
+    document.querySelectorAll('.icon-moon').forEach(el => {
+      el.style.display = theme === LIGHT ? 'block' : 'none';
+    });
 
     // Update Monaco editor theme if available
     if (window.monacoEditor) {
@@ -54,9 +54,16 @@ const ThemeManager = (() => {
     apply(theme);
 
     const btn = document.getElementById('theme-toggle');
-    if (btn) {
-      btn.addEventListener('click', toggle);
-    }
+    if (btn) btn.addEventListener('click', toggle);
+
+    const btnHome = document.getElementById('theme-toggle-home');
+    if (btnHome) btnHome.addEventListener('click', toggle);
+
+    const btnNotch = document.getElementById('theme-toggle-notch');
+    if (btnNotch) btnNotch.addEventListener('click', toggle);
+
+    const btnNotchMobile = document.getElementById('theme-toggle-notch-mobile');
+    if (btnNotchMobile) btnNotchMobile.addEventListener('click', toggle);
   }
 
   function isDark() {

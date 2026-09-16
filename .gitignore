@@ -1,0 +1,10 @@
+node_modules/
+.DS_Store
+*.log
+.env
+.env.local
+.gemini/
+.vercel/
+inspect_glb.js
+extract_code.js
+extracted_img_*.png

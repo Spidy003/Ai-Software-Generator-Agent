@@ -30,18 +30,30 @@ const ScreenManager = (() => {
     current = 'app';
 
     const homeScreen = document.getElementById('screen-home');
-    const appScreen  = document.getElementById('screen-app');
+    const appScreen = document.getElementById('screen-app');
+
+    // Trigger 3D model cinematic transition to Studio center
+    if (window.Computer3D) {
+      window.Computer3D.transitionTo('studio');
+    }
 
     // Animate home → left out
     homeScreen.classList.remove('active');
     homeScreen.classList.add('slide-out-left');
 
-    // Bring in app screen
+    // Bring in app screen with choreographed cinematic entrance
     appScreen.style.display = 'flex';
     appScreen.classList.remove('active');
+    appScreen.classList.remove('cinematic-entering');
     // Force a reflow before adding active so transition fires
     void appScreen.offsetWidth;
     appScreen.classList.add('active');
+    appScreen.classList.add('cinematic-entering');
+
+    // Clean up entering class after choreography finishes
+    setTimeout(() => {
+      appScreen.classList.remove('cinematic-entering');
+    }, 2000);
 
     // Remove home after transition
     setTimeout(() => {
@@ -59,9 +71,15 @@ const ScreenManager = (() => {
     current = 'home';
 
     const homeScreen = document.getElementById('screen-home');
-    const appScreen  = document.getElementById('screen-app');
+    const appScreen = document.getElementById('screen-app');
+
+    // Trigger 3D model cinematic transition back to Home topmost wire position
+    if (window.Computer3D) {
+      window.Computer3D.transitionTo('home');
+    }
 
     appScreen.classList.remove('active');
+    appScreen.classList.remove('cinematic-entering');
 
     homeScreen.style.display = 'flex';
     homeScreen.classList.remove('slide-out-left');
@@ -79,9 +97,9 @@ const ScreenManager = (() => {
   function init() {
     // Make sure home screen is visible
     const home = document.getElementById('screen-home');
-    const app  = document.getElementById('screen-app');
+    const app = document.getElementById('screen-app');
     if (home) { home.style.display = 'flex'; home.classList.add('active'); }
-    if (app)  { app.style.display  = 'none'; }
+    if (app) { app.style.display = 'none'; }
   }
 
   return { goToApp, goToHome, getCurrent: () => current, init };
@@ -89,21 +107,21 @@ const ScreenManager = (() => {
 
 /* ─── IDE PANEL MANAGER ──────────────────────────────────────────────── */
 const IDEPanel = (() => {
-  let isOpen       = false;
+  let isOpen = false;
   let currentProject = null;
-  let currentView  = 'code'; // 'code' | 'output'
-  let lastPrompt   = '';
+  let currentView = 'code'; // 'code' | 'output'
+  let lastPrompt = '';
 
   /* Open IDE — slides in from left */
   function open(project) {
     if (project) currentProject = project;
     if (!currentProject) return;
 
-    const panel         = document.getElementById('ide-panel');
-    const resizeHandle  = document.getElementById('resize-handle');
-    const topCenter     = document.getElementById('app-topbar-center');
-    const actionGroup   = document.getElementById('ide-action-group');
-    const topDivider    = document.getElementById('topbar-divider');
+    const panel = document.getElementById('ide-panel');
+    const resizeHandle = document.getElementById('resize-handle');
+    const topCenter = document.getElementById('app-topbar-center');
+    const actionGroup = document.getElementById('ide-action-group');
+    const topDivider = document.getElementById('topbar-divider');
 
     if (!panel) return;
 
@@ -112,9 +130,9 @@ const IDEPanel = (() => {
     if (resizeHandle) resizeHandle.style.display = 'block';
 
     // Show topbar items
-    if (topCenter)  topCenter.style.display  = 'flex';
+    if (topCenter) topCenter.style.display = 'flex';
     if (actionGroup) actionGroup.style.display = 'flex';
-    if (topDivider) topDivider.style.display  = 'block';
+    if (topDivider) topDivider.style.display = 'block';
 
     // Update project name
     const nameEl = document.getElementById('ide-project-name');
@@ -146,38 +164,38 @@ const IDEPanel = (() => {
   function close() {
     isOpen = false;
 
-    const panel         = document.getElementById('ide-panel');
-    const resizeHandle  = document.getElementById('resize-handle');
-    const topCenter     = document.getElementById('app-topbar-center');
-    const actionGroup   = document.getElementById('ide-action-group');
-    const topDivider    = document.getElementById('topbar-divider');
+    const panel = document.getElementById('ide-panel');
+    const resizeHandle = document.getElementById('resize-handle');
+    const topCenter = document.getElementById('app-topbar-center');
+    const actionGroup = document.getElementById('ide-action-group');
+    const topDivider = document.getElementById('topbar-divider');
 
     if (panel) panel.classList.remove('open');
     if (resizeHandle) resizeHandle.style.display = 'none';
-    if (topCenter)  topCenter.style.display  = 'none';
+    if (topCenter) topCenter.style.display = 'none';
     if (actionGroup) actionGroup.style.display = 'none';
-    if (topDivider) topDivider.style.display  = 'none';
+    if (topDivider) topDivider.style.display = 'none';
   }
 
   /* Switch code ↔ preview */
   function switchView(view) {
     currentView = view;
 
-    const codeView   = document.getElementById('code-view');
+    const codeView = document.getElementById('code-view');
     const outputView = document.getElementById('output-view');
-    const tabCode    = document.getElementById('tab-code');
-    const tabOutput  = document.getElementById('tab-output');
+    const tabCode = document.getElementById('tab-code');
+    const tabOutput = document.getElementById('tab-output');
 
     if (!codeView || !outputView) return;
 
     if (view === 'code') {
-      codeView.style.display   = 'flex';
+      codeView.style.display = 'flex';
       outputView.style.display = 'none';
       tabCode?.classList.add('active');
       tabOutput?.classList.remove('active');
       if (window.monacoEditor) setTimeout(() => window.monacoEditor.layout(), 80);
     } else {
-      codeView.style.display   = 'none';
+      codeView.style.display = 'none';
       outputView.style.display = 'flex';
       tabCode?.classList.remove('active');
       tabOutput?.classList.add('active');
@@ -294,15 +312,15 @@ async function promptAndGenerate(promptText) {
 /* ─── PROJECT SUMMARY ────────────────────────────────────────────────── */
 function buildProjectSummary(project, elapsed) {
   const langs = extractLanguages(project.files || []);
-  const size  = formatBytes(calcProjectSize(project.files || []));
+  const size = formatBytes(calcProjectSize(project.files || []));
   return `✅ **${project.project_name}** generated successfully!\n\n${project.description || ''}\n\n**Details:** ${project.files?.length || 0} files · ${langs.join(', ')} · ${size} · Generated in ${formatTime(elapsed)}`;
 }
 
 /* ─── INIT PROMPT INPUT ──────────────────────────────────────────────── */
 function initPromptInput() {
   const textarea = document.getElementById('prompt-input');
-  const sendBtn  = document.getElementById('send-btn');
-  const counter  = document.getElementById('char-counter');
+  const sendBtn = document.getElementById('send-btn');
+  const counter = document.getElementById('char-counter');
 
   if (!textarea || !sendBtn) return;
 
@@ -358,8 +376,8 @@ function initSuggestionChips() {
 /* ─── SIDEBAR TOGGLE ─────────────────────────────────────────────────── */
 function initSidebar() {
   const collapseBtn = document.getElementById('sidebar-collapse-btn');
-  const toggleBtn   = document.getElementById('sidebar-toggle-btn');
-  const sidebar     = document.getElementById('sidebar-chat');
+  const toggleBtn = document.getElementById('sidebar-toggle-btn');
+  const sidebar = document.getElementById('sidebar-chat');
 
   function toggleSidebar() {
     if (!sidebar) return;
@@ -398,16 +416,176 @@ function initNewChat() {
 
 /* ─── HOME / BACK BUTTONS ────────────────────────────────────────────── */
 function initNavigation() {
+  // Navigation transitions
   document.getElementById('start-building-btn')?.addEventListener('click', () => ScreenManager.goToApp());
+  document.getElementById('enter-studio-nav-btn')?.addEventListener('click', () => ScreenManager.goToApp());
+  document.getElementById('open-studio-pop-btn')?.addEventListener('click', () => ScreenManager.goToApp());
   document.getElementById('back-home-btn')?.addEventListener('click', () => ScreenManager.goToHome());
 
-  // Example chips on home page
-  document.querySelectorAll('.home-examples .example-chip').forEach(chip => {
+  // Notch Navbar links
+  document.getElementById('notch-link-home')?.addEventListener('click', (e) => { e.preventDefault(); ScreenManager.goToHome(); });
+  document.getElementById('notch-logo-btn')?.addEventListener('click', (e) => { e.preventDefault(); ScreenManager.goToHome(); });
+  document.getElementById('notch-link-studio')?.addEventListener('click', (e) => { e.preventDefault(); ScreenManager.goToApp(); });
+  document.getElementById('mobile-nav-home')?.addEventListener('click', (e) => { e.preventDefault(); ScreenManager.goToHome(); closeMobileDrawer(); });
+  document.getElementById('mobile-nav-studio')?.addEventListener('click', (e) => { e.preventDefault(); ScreenManager.goToApp(); closeMobileDrawer(); });
+
+  // Mobile Drawer Toggle
+  const mobileToggle = document.getElementById('notch-mobile-toggle');
+  const mobileDrawer = document.getElementById('notch-mobile-drawer');
+  const menuIcon = mobileToggle?.querySelector('.menu-icon');
+  const closeIcon = mobileToggle?.querySelector('.close-icon');
+
+  function closeMobileDrawer() {
+    if (mobileDrawer) mobileDrawer.style.display = 'none';
+    if (menuIcon) menuIcon.style.display = 'block';
+    if (closeIcon) closeIcon.style.display = 'none';
+  }
+
+  if (mobileToggle && mobileDrawer) {
+    mobileToggle.addEventListener('click', () => {
+      const isOpen = mobileDrawer.style.display !== 'none';
+      mobileDrawer.style.display = isOpen ? 'none' : 'block';
+      if (menuIcon) menuIcon.style.display = isOpen ? 'block' : 'none';
+      if (closeIcon) closeIcon.style.display = isOpen ? 'none' : 'block';
+    });
+  }
+
+  // Cyber Modal System
+  const modal = document.getElementById('system-modal');
+  const modalBadge = document.getElementById('modal-badge-text');
+  const modalTitle = document.getElementById('modal-title');
+  const modalDesc = document.getElementById('modal-desc');
+  const modalBody = document.getElementById('modal-dynamic-body');
+  const modalClose = document.getElementById('modal-close-btn');
+
+  function openModal(badge, title, desc, htmlContent = '') {
+    if (!modal) return;
+    if (modalBadge) modalBadge.textContent = badge;
+    if (modalTitle) modalTitle.textContent = title;
+    if (modalDesc) modalDesc.textContent = desc;
+    if (modalBody) modalBody.innerHTML = htmlContent;
+    modal.style.display = 'flex';
+    closeMobileDrawer();
+  }
+
+  function closeModal() {
+    if (modal) modal.style.display = 'none';
+  }
+
+  modalClose?.addEventListener('click', closeModal);
+  modal?.addEventListener('click', (e) => {
+    if (e.target === modal) closeModal();
+  });
+
+  // Modal Triggers
+  document.getElementById('notch-link-about')?.addEventListener('click', (e) => {
+    e.preventDefault();
+    openModal(
+      'SYS://CLUSTER-SPEC',
+      'About Neural Architecture',
+      'The AI Software Generator features a real-time multi-display rig running Gemini 2.5 Flash neural models with zero-latency browser compilation.',
+      '<div class="about-grid"><div class="about-stat-card"><span class="about-stat-label">DISPLAYS</span><span class="about-stat-value">4x CRT Matrix</span></div><div class="about-stat-card"><span class="about-stat-label">ENGINE</span><span class="about-stat-value">Gemini 2.5 Flash</span></div><div class="about-stat-card"><span class="about-stat-label">SYNTHESIS</span><span class="about-stat-value">HTML5 · CSS · JS</span></div><div class="about-stat-card"><span class="about-stat-label">LATENCY</span><span class="about-stat-value">14ms Pipeline</span></div></div>'
+    );
+  });
+  document.getElementById('mobile-nav-about')?.addEventListener('click', (e) => {
+    e.preventDefault();
+    document.getElementById('notch-link-about')?.click();
+  });
+
+  document.getElementById('notch-link-events')?.addEventListener('click', (e) => {
+    e.preventDefault();
+    openModal(
+      'SYS://SCHEDULE',
+      'Neural Events & Workshops',
+      'Join upcoming developer streams, autonomous agent build sessions, and prompt engineering jams.',
+      '<div class="about-grid"><div class="about-stat-card"><span class="about-stat-label">ACTIVE</span><span class="about-stat-value">Code Synth 2026</span></div><div class="about-stat-card"><span class="about-stat-label">UPCOMING</span><span class="about-stat-value">VengeanceUI Lab</span></div></div>'
+    );
+  });
+  document.getElementById('mobile-nav-events')?.addEventListener('click', (e) => {
+    e.preventDefault();
+    document.getElementById('notch-link-events')?.click();
+  });
+
+  document.getElementById('notch-link-sponsors')?.addEventListener('click', (e) => {
+    e.preventDefault();
+    openModal(
+      'SYS://PARTNERS',
+      'Sponsors & Core Stack',
+      'Engineered with cutting-edge open web technologies, Three.js WebGL rendering, and Gemini AI inference.',
+      '<div class="about-grid"><div class="about-stat-card"><span class="about-stat-label">CORE AI</span><span class="about-stat-value">Google Gemini</span></div><div class="about-stat-card"><span class="about-stat-label">3D ENGINE</span><span class="about-stat-value">Three.js WebGL</span></div></div>'
+    );
+  });
+  document.getElementById('mobile-nav-sponsors')?.addEventListener('click', (e) => {
+    e.preventDefault();
+    document.getElementById('notch-link-sponsors')?.click();
+  });
+
+  document.getElementById('notch-link-pricing')?.addEventListener('click', (e) => {
+    e.preventDefault();
+    openModal(
+      'SYS://TIERS',
+      'Pipeline Pricing & Tiers',
+      'Choose the computation power and throughput for your development workflow.',
+      '<div class="about-grid"><div class="about-stat-card"><span class="about-stat-label">COMMUNITY</span><span class="about-stat-value">Free / Unlimited</span></div><div class="about-stat-card"><span class="about-stat-label">ENTERPRISE</span><span class="about-stat-value">Custom Workflows</span></div></div>'
+    );
+  });
+  document.getElementById('mobile-nav-pricing')?.addEventListener('click', (e) => {
+    e.preventDefault();
+    document.getElementById('notch-link-pricing')?.click();
+  });
+
+  document.getElementById('notch-login-btn')?.addEventListener('click', () => {
+    openModal(
+      'SYS://AUTH',
+      'Terminal Authentication',
+      'Sign in to sync your generated projects, API keys, and workspace settings.',
+      '<div class="login-field-group"><label class="login-label">AGENT ID / EMAIL</label><input type="text" class="login-input" placeholder="developer@neural.ai"/></div><div class="login-field-group"><label class="login-label">ACCESS KEY</label><input type="password" class="login-input" placeholder="••••••••••••"/></div><div class="login-modal-actions"><button class="login-action-btn" onclick="showToast(\'Authenticated successfully\', \'success\', \'🔑\'); document.getElementById(\'system-modal\').style.display=\'none\';">AUTHENTICATE</button></div>'
+    );
+  });
+  document.getElementById('mobile-login-btn')?.addEventListener('click', () => {
+    document.getElementById('notch-login-btn')?.click();
+  });
+
+  document.getElementById('notch-signup-btn')?.addEventListener('click', () => {
+    openModal(
+      'SYS://REGISTER',
+      'Initialize New Agent Account',
+      'Join the neural code generation network with instant ZIP project downloads and cloud history.',
+      '<div class="login-field-group"><label class="login-label">CODENAME</label><input type="text" class="login-input" placeholder="neo_builder"/></div><div class="login-field-group"><label class="login-label">PRIMARY EMAIL</label><input type="email" class="login-input" placeholder="neo@matrix.org"/></div><div class="login-modal-actions"><button class="login-action-btn" onclick="showToast(\'Account initialized!\', \'success\', \'🚀\'); document.getElementById(\'system-modal\').style.display=\'none\';">INITIALIZE ACCOUNT</button></div>'
+    );
+  });
+  document.getElementById('mobile-signup-btn')?.addEventListener('click', () => {
+    document.getElementById('notch-signup-btn')?.click();
+  });
+
+  // Home prompt input & Generate button
+  const heroInput = document.getElementById('hero-prompt-input');
+  const heroBtn = document.getElementById('hero-generate-btn');
+
+  function triggerHeroGenerate() {
+    const text = heroInput?.value?.trim();
+    if (!text) {
+      showToast('Please type a software prompt first', 'warning', '⚠️');
+      heroInput?.focus();
+      return;
+    }
+    promptAndGenerate(text);
+  }
+
+  heroBtn?.addEventListener('click', triggerHeroGenerate);
+  heroInput?.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      triggerHeroGenerate();
+    }
+  });
+
+  // Example chips on simple home page
+  document.querySelectorAll('.simple-chip, .suggestion-chip, .example-chip, .retro-chip').forEach(chip => {
     chip.addEventListener('click', () => {
       const prompt = chip.dataset.prompt;
       if (!prompt) return;
-      ScreenManager.goToApp();
-      setTimeout(() => promptAndGenerate(prompt), 300);
+      promptAndGenerate(prompt);
     });
   });
 }
@@ -448,8 +626,8 @@ function initVoiceInput() {
   let listening = false;
 
   voiceBtn.addEventListener('click', () => { if (listening) rec.stop(); else rec.start(); });
-  rec.addEventListener('start',  () => { listening = true;  voiceBtn.style.color = '#FF5D7A'; });
-  rec.addEventListener('end',    () => { listening = false; voiceBtn.style.color = ''; });
+  rec.addEventListener('start', () => { listening = true; voiceBtn.style.color = '#FF5D7A'; });
+  rec.addEventListener('end', () => { listening = false; voiceBtn.style.color = ''; });
   rec.addEventListener('result', (e) => {
     const txt = Array.from(e.results).map(r => r[0].transcript).join('');
     textarea.value = txt;
@@ -482,8 +660,8 @@ function initKeyboardShortcuts() {
 
 /* ─── DRAG RESIZE HANDLE ─────────────────────────────────────────────── */
 function initResizeHandle() {
-  const handle  = document.getElementById('resize-handle');
-  const idePanel= document.getElementById('ide-panel');
+  const handle = document.getElementById('resize-handle');
+  const idePanel = document.getElementById('ide-panel');
   const splitEl = document.getElementById('app-body-split');
   if (!handle || !idePanel) return;
 
@@ -517,10 +695,10 @@ function initResizeHandle() {
 }
 
 /* ─── STATUS DOT ─────────────────────────────────────────────────────── */
-window.setStatus = function(status, text) {
-  const dot  = document.getElementById('ai-status-dot');
+window.setStatus = function (status, text) {
+  const dot = document.getElementById('ai-status-dot');
   const span = document.getElementById('ai-status-text');
-  if (dot)  { dot.className = 'status-dot status-' + status; }
+  if (dot) { dot.className = 'status-dot status-' + status; }
   if (span) span.textContent = text;
 };
 

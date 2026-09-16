@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>AI Software Generator â€” Retro-Tech Dark</title>
+<meta name="description" content="Generate complete web apps with AI. Describe your idea and get production-ready HTML, CSS & JavaScript code instantly." />
+<!-- Fonts: Orbitron + Inter + JetBrains Mono -->
+<link rel="preconnect" href="[https://fonts.googleapis.com](https://fonts.googleapis.com/)" />
+<link rel="preconnect" href="[https://fonts.gstatic.com](https://fonts.gstatic.com/)" crossorigin />
+<link href="[https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap](https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap)" rel="stylesheet" />
+<link rel="stylesheet" href="[https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css](https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css)" />
+<link rel="stylesheet" href="[styles.css](http://127.0.0.1:3000/styles.css)" />
+<!-- Three.js Module Importmap -->
+<script type="importmap">
+{
+"imports": {
+"three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+"three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+}
+}
+</script>
+</head>
+<body class="dark-theme" id="app-body">
+<!-- Toast Notification Container -->
+<div id="toast-container" aria-live="polite"></div>
+<!-- Loading Overlay -->
+<div class="loading-overlay" id="loading-overlay" style="display:none">
+<div class="loading-content">
+<div class="simple-spinner"></div>
+<div class="loading-text-group">
+<p class="loading-main-text" id="loading-main-text">Generating your software...</p>
+<div class="loading-steps" id="loading-steps">
+<div class="loading-step active" id="step-0">Planning Project Structure</div>
+<div class="loading-step" id="step-1">Writing HTML Components</div>
+<div class="loading-step" id="step-2">Adding CSS Styles</div>
+<div class="loading-step" id="step-3">Implementing JavaScript Logic</div>
+<div class="loading-step" id="step-4">Finalizing Project Files</div>
+</div>
+<div class="loading-bar-track">
+<div class="loading-bar-fill" id="loading-bar" style="width:20%"></div>
+</div>
+</div>
+</div>
+</div>
+<!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+SCREEN 1 â€” RETRO-TECH HOME SCREEN
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
+<div id="screen-home" class="app-screen active">
+<!-- Background dot grid -->
+<div class="home-bg" aria-hidden="true"></div>
+<!-- Navbar -->
+<nav class="simple-navbar">
+<div class="nav-brand">
+<div class="brand-icon-wrap">
+<svg width="22" height="22" viewBox="0 0 374 313" fill="none" style="color:var(--text-primary)">
+<path d="M247 181L237.5 236.5L373.5 313L247 181Z" fill="currentColor"/>
+<path d="M187.5 0L154 209L173.5 195L237.5 83L187.5 0Z" fill="currentColor"/>
+<path d="M373.5 313L253.761 110.5L197.5 195L237.5 181L212.5 222L0 313H187.5L237.5 236.5L247 181L373.5 313Z" fill="currentColor"/>
+<path d="M187.5 0L0 313L154 209L187.5 0Z" fill="currentColor"/>
+</svg>
+</div>
+<span class="brand-name">AI GENERATOR</span>
+</div>
+<div class="nav-actions">
+<div class="nav-badge">
+<span class="nav-badge-dot"></span>
+Powered by Gemini
+</div>
+<button class="btn-clean-ghost" id="enter-studio-nav-btn">Open Studio</button>
+<button class="btn-icon" id="theme-toggle-home" title="Toggle theme">
+<svg class="icon-sun" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+<circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/>
+<line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+<line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/>
+</svg>
+<svg class="icon-moon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none">
+<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+</svg>
+</button>
+</div>
+</nav>
+<!-- Hero Split: LEFT = Computer | RIGHT = Content -->
+<main class="retro-hero">
+<!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+LEFT â€” 3D ISOMETRIC COMPUTER ILLUSTRATION
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
+<div class="hero-right">
+<div class="hero-divider"></div>
+<!-- Corner brackets -->
+<div class="corner-deco tl"></div>
+<div class="corner-deco tr"></div>
+<div class="corner-deco bl"></div>
+<div class="corner-deco br"></div>
+<div class="computer-scene" id="computer-scene-wrap">
+<!-- Three.js GLB renderer (screen.glb) fills this canvas -->
+<canvas id="computer-canvas" style="display:block;width:100%;height:100%;background:transparent;"></canvas>
+</div>
+</div>
+<!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+RIGHT â€” TEXT CONTENT + PROMPT
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
+<div class="hero-left">
+<!-- Eyebrow badge -->
+<div class="hero-eyebrow">
+<span class="hero-eyebrow-dot"></span>
+GEMINI Â· AI-POWERED CODE GENERATOR
+</div>
+<!-- Title -->
+<h1 class="hero-title">
+What do you<br />
+want to <span class="hero-title-accent">build</span> today?
+</h1>
+<p class="hero-desc">
+Describe any web app, tool, or website in plain language.
+The AI writes complete code and opens a live preview instantly.
+</p>
+<!-- Glassmorphism Prompt Card -->
+<div class="hero-prompt-card" id="hero-prompt-card">
+<textarea
+id="hero-prompt-input"
+class="hero-prompt-textarea"
+placeholder="e.g. Build a modern Netflix clone with dark theme, search, and video cards..."
+rows="3"
+></textarea>
+<div class="prompt-card-footer">
+<span class="prompt-card-hint">â†µ Enter or click Generate</span>
+<button class="btn-generate" id="hero-generate-btn">
+<span>Generate</span>
+<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+<line x1="5" y1="12" x2="19" y2="12"/>
+<polyline points="12 5 19 12 12 19"/>
+</svg>
+</button>
+</div>
+</div>
+<!-- Quick suggestion chips -->
+<div class="hero-chips-row">
+<span class="chips-label">TRY â†’</span>
+<button class="retro-chip" data-prompt="Create a modern Netflix clone with dark theme and movie cards">ðŸŽ¬ Netflix</button>
+<button class="retro-chip" data-prompt="Build a clean banking dashboard with balance and transactions">ðŸ¦ Banking</button>
+<button class="retro-chip" data-prompt="Create a beautiful restaurant website with menu and booking">ðŸ½ï¸ Restaurant</button>
+<button class="retro-chip" data-prompt="Build an online e-commerce store with cart and checkout">ðŸ›’ Store</button>
+<button class="retro-chip" data-prompt="Create a modern portfolio website with projects section">ðŸ’¼ Portfolio</button>
+</div>
+</div>
+</main>
+<!-- Stats strip at bottom -->
+<div class="hero-stats-strip">
+<div class="stat-item">
+<div class="stat-icon">
+<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+<polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/>
+</svg>
+</div>
+<div class="stat-text">
+<span class="stat-label">COMPLETE CODE</span>
+<span class="stat-desc">Full HTML, CSS &amp; JavaScript</span>
+</div>
+</div>
+<div class="stat-item">
+<div class="stat-icon">
+<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+<rect x="2" y="3" width="20" height="14" rx="2"/>
+<line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/>
+</svg>
+</div>
+<div class="stat-text">
+<span class="stat-label">LIVE PREVIEW</span>
+<span class="stat-desc">Instant interactive rendering</span>
+</div>
+</div>
+<div class="stat-item">
+<div class="stat-icon">
+<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+<polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
+</svg>
+</div>
+<div class="stat-text">
+<span class="stat-label">ONE-CLICK EXPORT</span>
+<span class="stat-desc">Download full ZIP project</span>
+</div>
+</div>
+</div>
+</div><!-- /#screen-home -->
+<!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+SCREEN 2 â€” WORKSPACE (Chat + IDE)
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
+<div id="screen-app" class="app-screen">
+<header class="workspace-topbar" id="app-topbar">
+<div class="topbar-left">
+<button class="btn-icon" id="back-home-btn" title="Back to Home">
+<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+<polyline points="15 18 9 12 15 6"/>
+</svg>
+</button>
+<div class="brand-badge">
+<svg width="16" height="16" viewBox="0 0 374 313" fill="none" style="color:var(--text-primary)">
+<path d="M247 181L237.5 236.5L373.5 313L247 181Z" fill="currentColor"/>
+<path d="M187.5 0L154 209L173.5 195L237.5 83L187.5 0Z" fill="currentColor"/>
+<path d="M373.5 313L253.761 110.5L197.5 195L237.5 181L212.5 222L0 313H187.5L237.5 236.5L247 181L373.5 313Z" fill="currentColor"/>
+<path d="M187.5 0L0 313L154 209L187.5 0Z" fill="currentColor"/>
+</svg>
+<span>AI GENERATOR</span>
+</div>
+</div>
+<div class="topbar-center" id="app-topbar-center" style="display:none">
+<div class="project-info-pill">
+<span class="project-name-text" id="ide-project-name">Project</span>
+<span class="project-meta-text" id="ide-project-meta"></span>
+</div>
+<div class="view-toggle-tabs">
+<button class="tab-btn active" id="tab-code" data-view="code">
+<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+<polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/>
+</svg>
+Code
+</button>
+<button class="tab-btn" id="tab-output" data-view="output">
+<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+<rect x="2" y="3" width="20" height="14" rx="2"/>
+<line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/>
+</svg>
+Preview
+</button>
+</div>
+</div>
+<div class="topbar-right">
+<div class="ide-action-group" id="ide-action-group" style="display:none">
+<button class="btn-action" id="copy-all-btn">
+<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+<rect x="9" y="9" width="13" height="13" rx="2"/>
+<path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+</svg>
+Copy
+</button>
+<button class="btn-action" id="download-zip-btn">
+<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+<polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
+</svg>
+ZIP
+</button>
+<button class="btn-action" id="regenerate-btn">
+<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+<polyline points="23 4 23 10 17 10"/>
+<path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/>
+</svg>
+Retry
+</button>
+<button class="btn-action btn-danger" id="clear-ide-btn">
+<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+<polyline points="3 6 5 6 21 6"/>
+<path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/>
+</svg>
+Clear
+</button>
+</div>
+<div class="topbar-divider" id="topbar-divider" style="display:none"></div>
+<button class="btn-icon" id="theme-toggle" title="Toggle theme">
+<svg class="icon-sun" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+<circle cx="12" cy="12" r="5"/>
+<line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/>
+</svg>
+<svg class="icon-moon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none">
+<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+</svg>
+</button>
+<button class="btn-new-chat" id="new-chat-btn"><span>+ New Chat</span></button>
+<div class="api-key-box" id="api-key-topbar">
+<input type="password" id="api-key-input" class="api-key-input" placeholder="Gemini API Key..." />
+<button class="btn-save-key" id="save-api-btn">Save</button>
+<button class="btn-icon key-eye" id="api-eye-btn">
+<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+<circle cx="12" cy="12" r="3"/>
+</svg>
+</button>
+</div>
+</div>
+</header>
+<div class="workspace-body" id="app-body-split">
+<div class="ide-panel" id="ide-panel">
+<div class="file-explorer" id="file-explorer">
+<div class="explorer-header">
+<span class="explorer-title">FILES</span>
+<div class="search-input-wrap">
+<input type="text" id="file-search-input" placeholder="Search filesâ€¦" />
+</div>
+</div>
+<div class="explorer-project-info" id="explorer-project-info">
+<div class="info-row"><span class="info-label">Project</span><span class="info-val" id="exp-project-name">â€”</span></div>
+<div class="info-row"><span class="info-label">Files</span><span class="info-val" id="exp-files-count">â€”</span></div>
+<div class="info-row"><span class="info-label">Time</span><span class="info-val" id="exp-gen-time">â€”</span></div>
+</div>
+<div class="file-tree" id="file-tree"></div>
+</div>
+<div class="editor-area" id="editor-area">
+<div class="editor-tabs-bar" id="editor-tabs-bar"></div>
+<div class="code-view" id="code-view">
+<div id="monaco-container" style="width:100%;height:100%;"></div>
+</div>
+<div class="output-view" id="output-view" style="display:none">
+<div class="preview-header-bar">
+<div class="preview-url-pill"><span id="preview-url">preview://project</span></div>
+<div class="preview-actions">
+<button class="btn-icon preview-btn" id="preview-refresh-btn" title="Refresh">
+<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+<polyline points="23 4 23 10 17 10"/>
+<path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/>
+</svg>
+</button>
+<button class="btn-icon preview-btn" id="preview-fullscreen-btn" title="Open in new window">
+<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+<polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/>
+<line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/>
+</svg>
+</button>
+</div>
+</div>
+<iframe id="preview-frame" title="Live Preview" allowfullscreen style="flex:1;border:none;width:100%;height:100%;"></iframe>
+</div>
+</div>
+</div>
+<div class="resize-handle" id="resize-handle" style="display:none"></div>
+<div class="chat-section" id="chat-section">
+<aside class="sidebar-chat" id="sidebar-chat">
+<div class="sidebar-top">
+<button class="btn-sidebar-new" id="new-chat-sidebar-btn">+ New Chat</button>
+<button class="btn-icon" id="sidebar-collapse-btn" title="Collapse sidebar">
+<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+<polyline points="15 18 9 12 15 6"/>
+</svg>
+</button>
+</div>
+<div class="sidebar-search-box">
+<input type="text" id="chat-search-input" placeholder="Search chatsâ€¦" />
+</div>
+<div class="chat-history-container">
+<div class="sidebar-label">Pinned</div>
+<div class="chat-list" id="pinned-chats-list"></div>
+<div class="sidebar-label">Recent</div>
+<div class="chat-list" id="chat-history-list">
+<div class="chat-empty-state" id="chat-empty-state"><p>No chat history yet</p></div>
+</div>
+</div>
+</aside>
+<main class="chat-main" id="chat-main">
+<div class="chat-header">
+<div class="chat-header-left">
+<button class="btn-icon" id="sidebar-toggle-btn" title="Toggle history">
+<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+<line x1="3" y1="6" x2="21" y2="6"/>
+<line x1="3" y1="12" x2="21" y2="12"/>
+<line x1="3" y1="18" x2="21" y2="18"/>
+</svg>
+</button>
+<span class="chat-current-title" id="chat-title-display">New Conversation</span>
+</div>
+<div class="chat-header-right">
+<div class="simple-status">
+<span class="status-dot" id="ai-status-dot"></span>
+<span class="status-text" id="ai-status-text">Ready</span>
+</div>
+</div>
+</div>
+<div class="messages-area" id="messages-area">
+<div class="welcome-state" id="welcome-state">
+<div class="welcome-badge">âš¡ AI Software Assistant</div>
+<h2 class="welcome-title">What would you like to build?</h2>
+<p class="welcome-desc">Type your idea below. You can ask to create a new project or make changes to your current one.</p>
+<div class="prompt-suggestions" id="prompt-suggestions">
+<button class="suggestion-chip" data-prompt="Create a modern Netflix clone with dark theme, hero section, and movie cards">ðŸŽ¬ Netflix Clone</button>
+<button class="suggestion-chip" data-prompt="Build a clean banking management system with dashboard, transactions, and wallet">ðŸ¦ Banking Dashboard</button>
+<button class="suggestion-chip" data-prompt="Create a beautiful restaurant website with menu, gallery, and contact form">ðŸ½ï¸ Restaurant Website</button>
+<button class="suggestion-chip" data-prompt="Build a full e-commerce store with product grid, cart, and checkout">ðŸ›’ E-Commerce Store</button>
+<button class="suggestion-chip" data-prompt="Create a modern portfolio website with about, projects, and contact">ðŸ’¼ Portfolio Website</button>
+</div>
+</div>
+</div>
+<div class="typing-indicator" id="typing-indicator" style="display:none">
+<div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div>
+<span class="typing-msg">AI is thinking and writing code...</span>
+</div>
+<div class="chat-input-area" id="chat-input-area">
+<div class="input-wrapper" id="input-wrapper">
+<textarea id="prompt-input" class="prompt-textarea" placeholder="Describe the app or feature you want to buildâ€¦" rows="1"></textarea>
+<div class="input-bottom-row">
+<div class="input-bottom-left">
+<button class="btn-icon" id="voice-btn" title="Voice input">
+<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+<path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
+<path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+<line x1="12" y1="19" x2="12" y2="23"/>
+<line x1="8" y1="23" x2="16" y2="23"/>
+</svg>
+</button>
+</div>
+<div class="input-bottom-right">
+<span class="char-count" id="char-counter">0</span>
+<button class="btn-send-round" id="send-btn" disabled aria-label="Send">
+<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+<line x1="22" y1="2" x2="11" y2="13"/>
+<polygon points="22 2 15 22 11 13 2 9 22 2"/>
+</svg>
+</button>
+</div>
+</div>
+</div>
+</div>
+</main>
+<aside class="sidebar-right" id="sidebar-right">
+<div class="right-header">Details</div>
+<div class="right-body">
+<div class="side-info-card">
+<div class="card-label">MODEL</div>
+<div class="card-value">Gemini Flash</div>
+</div>
+<div class="side-info-card">
+<div class="card-label">GENERATION TIME</div>
+<div class="card-value" id="gen-time-display">â€”</div>
+</div>
+<div class="side-info-card">
+<div class="card-label">TOKENS USED</div>
+<div class="card-value" id="token-display">â€”</div>
+</div>
+<div class="side-info-card" id="current-project-card" style="display:none">
+<div class="card-label">PROJECT</div>
+<div class="card-value" id="project-name-display">â€”</div>
+</div>
+<div class="side-info-card" id="files-info-card" style="display:none">
+<div class="card-label">FILES</div>
+<div class="card-value" id="files-count-display">â€”</div>
+</div>
+<div class="side-info-card" id="lang-info-card" style="display:none">
+<div class="card-label">LANGUAGES</div>
+<div class="lang-tags" id="lang-tags-display"></div>
+</div>
+</div>
+</aside>
+</div>
+</div>
+</div><!-- /#screen-app -->
+<!-- Scripts -->
+<script src="[https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js](https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js)"></script>
+<script src="[https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js](https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js)"></script>
+<script src="[https://cdnjs.cloudflare.com/ajax/libs/marked/9.1.6/marked.min.js](https://cdnjs.cloudflare.com/ajax/libs/marked/9.1.6/marked.min.js)"></script>
+<script src="[https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js](https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js)"></script>
+<script src="[utils.js](http://127.0.0.1:3000/utils.js)"></script>
+<script src="[animations.js](http://127.0.0.1:3000/animations.js)"></script>
+<script src="[theme.js](http://127.0.0.1:3000/theme.js)"></script>
+<script src="[chat.js](http://127.0.0.1:3000/chat.js)"></script>
+<script src="[api.js](http://127.0.0.1:3000/api.js)"></script>
+<script src="[explorer.js](http://127.0.0.1:3000/explorer.js)"></script>
+<script src="[editor.js](http://127.0.0.1:3000/editor.js)"></script>
+<script src="[preview.js](http://127.0.0.1:3000/preview.js)"></script>
+<script src="[zip.js](http://127.0.0.1:3000/zip.js)"></script>
+<script src="[app.js](http://127.0.0.1:3000/app.js)"></script>
+<script type="module" src="[computer3d.js](http://127.0.0.1:3000/computer3d.js)"></script>
+<!-- Retro chip quick-fill -->
+<script>
+document.querySelectorAll('.retro-chip[data-prompt]').forEach(chip => {
+chip.addEventListener('click', () => {
+const ta = document.getElementById('hero-prompt-input');
+if (ta) { ta.value = chip.dataset.prompt; ta.focus(); }
+});
+});
+</script>
+</body>
+</html>

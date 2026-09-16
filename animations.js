@@ -1,332 +1,221 @@
 /* ═══════════════════════════════════════════════════════════════════════
-   ANIMATIONS.JS — Particle Canvas, Scroll Reveal, Micro-animations
+   ANIMATIONS.JS — Simple, Lightweight & Fast Helper Scripts
    ═══════════════════════════════════════════════════════════════════════ */
 
 'use strict';
 
-/* ─── PARTICLE SYSTEM ───────────────────────────────────────────────── */
-class ParticleSystem {
-  constructor(canvas) {
-    this.canvas = canvas;
-    this.ctx = canvas.getContext('2d');
-    this.particles = [];
-    this.connections = [];
-    this.mouse = { x: null, y: null, radius: 120 };
-    this.animFrame = null;
-    this.running = false;
-
-    this.config = {
-      count: 80,
-      minSize: 0.8,
-      maxSize: 2.5,
-      speed: 0.4,
-      connectionDist: 120,
-      primaryColor: '91, 140, 255',
-      accentColor: '0, 245, 255',
-      opacity: 0.5,
-    };
-
-    this.resize();
-    this.init();
-    this.bindEvents();
-  }
-
-  resize() {
-    const wrapper = this.canvas.parentElement;
-    this.canvas.width = wrapper.offsetWidth;
-    this.canvas.height = wrapper.offsetHeight;
-  }
-
-  init() {
-    this.particles = [];
-    for (let i = 0; i < this.config.count; i++) {
-      this.particles.push(this.createParticle());
-    }
-  }
-
-  createParticle() {
-    const isAccent = Math.random() < 0.15;
-    return {
-      x: Math.random() * this.canvas.width,
-      y: Math.random() * this.canvas.height,
-      vx: (Math.random() - 0.5) * this.config.speed,
-      vy: (Math.random() - 0.5) * this.config.speed,
-      size: this.config.minSize + Math.random() * (this.config.maxSize - this.config.minSize),
-      opacity: 0.2 + Math.random() * 0.6,
-      color: isAccent ? this.config.accentColor : this.config.primaryColor,
-      pulse: Math.random() * Math.PI * 2,
-      pulseSpeed: 0.02 + Math.random() * 0.03,
-    };
-  }
-
-  bindEvents() {
-    window.addEventListener('resize', throttle(() => {
-      this.resize();
-      this.init();
-    }, 300));
-
-    this.canvas.parentElement.addEventListener('mousemove', (e) => {
-      const rect = this.canvas.getBoundingClientRect();
-      this.mouse.x = e.clientX - rect.left;
-      this.mouse.y = e.clientY - rect.top;
-    });
-
-    this.canvas.parentElement.addEventListener('mouseleave', () => {
-      this.mouse.x = null;
-      this.mouse.y = null;
-    });
-  }
-
-  update() {
-    this.particles.forEach(p => {
-      p.pulse += p.pulseSpeed;
-      p.x += p.vx;
-      p.y += p.vy;
-
-      // Bounce off walls
-      if (p.x < 0 || p.x > this.canvas.width) p.vx *= -1;
-      if (p.y < 0 || p.y > this.canvas.height) p.vy *= -1;
-
-      // Mouse repulsion
-      if (this.mouse.x !== null) {
-        const dx = p.x - this.mouse.x;
-        const dy = p.y - this.mouse.y;
-        const dist = Math.sqrt(dx * dx + dy * dy);
-        if (dist < this.mouse.radius) {
-          const force = (this.mouse.radius - dist) / this.mouse.radius;
-          p.x += (dx / dist) * force * 1.5;
-          p.y += (dy / dist) * force * 1.5;
-        }
-      }
-    });
-  }
-
-  draw() {
-    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-
-    // Draw connections
-    for (let i = 0; i < this.particles.length; i++) {
-      for (let j = i + 1; j < this.particles.length; j++) {
-        const a = this.particles[i];
-        const b = this.particles[j];
-        const dx = a.x - b.x;
-        const dy = a.y - b.y;
-        const dist = Math.sqrt(dx * dx + dy * dy);
-
-        if (dist < this.config.connectionDist) {
-          const alpha = (1 - dist / this.config.connectionDist) * 0.25;
-          this.ctx.beginPath();
-          this.ctx.strokeStyle = `rgba(${a.color}, ${alpha})`;
-          this.ctx.lineWidth = 0.6;
-          this.ctx.moveTo(a.x, a.y);
-          this.ctx.lineTo(b.x, b.y);
-          this.ctx.stroke();
-        }
-      }
-    }
-
-    // Draw particles
-    this.particles.forEach(p => {
-      const pulseFactor = 0.85 + Math.sin(p.pulse) * 0.15;
-      const size = p.size * pulseFactor;
-      const opacity = p.opacity * pulseFactor;
-
-      this.ctx.beginPath();
-      this.ctx.arc(p.x, p.y, size, 0, Math.PI * 2);
-      this.ctx.fillStyle = `rgba(${p.color}, ${opacity})`;
-      this.ctx.fill();
-
-      // Glow
-      if (size > 1.5) {
-        const gradient = this.ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, size * 3);
-        gradient.addColorStop(0, `rgba(${p.color}, ${opacity * 0.4})`);
-        gradient.addColorStop(1, `rgba(${p.color}, 0)`);
-        this.ctx.beginPath();
-        this.ctx.arc(p.x, p.y, size * 3, 0, Math.PI * 2);
-        this.ctx.fillStyle = gradient;
-        this.ctx.fill();
-      }
-    });
-  }
-
-  loop() {
-    if (!this.running) return;
-    this.update();
-    this.draw();
-    this.animFrame = requestAnimationFrame(() => this.loop());
-  }
-
-  start() {
-    if (this.running) return;
-    this.running = true;
-    this.loop();
-  }
-
-  stop() {
-    this.running = false;
-    if (this.animFrame) cancelAnimationFrame(this.animFrame);
-  }
-}
-
-/* ─── SCROLL REVEAL ─────────────────────────────────────────────────── */
-class ScrollReveal {
-  constructor() {
-    this.elements = [];
-    this.observer = null;
-    this.init();
-  }
-
-  init() {
-    this.observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting) {
-            const el = entry.target;
-            const delay = parseInt(el.dataset.delay) || 0;
-            setTimeout(() => {
-              el.classList.add('revealed');
-            }, delay);
-            this.observer.unobserve(el);
-          }
-        });
-      },
-      { threshold: 0.12, rootMargin: '0px 0px -40px 0px' }
-    );
-
-    this.observe();
-  }
-
-  observe() {
-    document.querySelectorAll('.reveal-on-scroll').forEach(el => {
-      this.observer.observe(el);
-    });
-  }
-}
-
-/* ─── NAV SCROLL EFFECT ─────────────────────────────────────────────── */
-function initNavScroll() {
-  const nav = document.getElementById('topnav');
-  if (!nav) return;
-
-  const handler = throttle(() => {
-    nav.classList.toggle('scrolled', window.scrollY > 20);
-  }, 100);
-
-  window.addEventListener('scroll', handler, { passive: true });
-}
-
-/* ─── RIPPLE INIT ───────────────────────────────────────────────────── */
-function initRipples() {
-  const targets = document.querySelectorAll(
-    '.btn-primary-hero, .btn-secondary-hero, .btn-new-chat, .btn-nav-primary, .btn-send, .btn-save-api'
-  );
-  targets.forEach(btn => addRipple(btn));
-}
-
-/* ─── REVEAL FEATURE CARDS ──────────────────────────────────────────── */
-function setupReveal() {
-  document.querySelectorAll('.feature-card, .pricing-card, .section-header').forEach((el, i) => {
-    el.classList.add('reveal-on-scroll');
-    const delay = parseInt(el.dataset.delay) || (i * 80);
-    el.dataset.delay = delay;
-  });
-}
-
-/* ─── HERO MOUSE PARALLAX ───────────────────────────────────────────── */
-function initParallax() {
-  const heroVisual = document.getElementById('hero-visual');
-  if (!heroVisual) return;
-
-  document.addEventListener('mousemove', throttle((e) => {
-    const { innerWidth: W, innerHeight: H } = window;
-    const mx = (e.clientX - W / 2) / W;
-    const my = (e.clientY - H / 2) / H;
-
-    const cards = heroVisual.querySelectorAll('.hero-card');
-    cards.forEach((card, i) => {
-      const factor = (i + 1) * 4;
-      card.style.transform = `translate(${mx * factor}px, ${my * factor}px)`;
-    });
-  }, 50));
-}
-
-/* ─── SMOOTH SECTION NAVIGATION ─────────────────────────────────────── */
-function initSmoothNav() {
-  document.querySelectorAll('.nav-link[href^="#"]').forEach(link => {
-    link.addEventListener('click', (e) => {
-      e.preventDefault();
-      const target = document.querySelector(link.getAttribute('href'));
-      if (target) {
-        scrollToElement(target, 80);
-        // Update active state
-        document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
-        link.classList.add('active');
-      }
-    });
-  });
-}
-
-/* ─── AUTO-RESIZE TEXTAREA ──────────────────────────────────────────── */
+// Auto-resize prompt textarea
 function autoResizeTextarea(textarea) {
+  if (!textarea) return;
   textarea.addEventListener('input', () => {
     textarea.style.height = 'auto';
-    textarea.style.height = Math.min(textarea.scrollHeight, 200) + 'px';
+    textarea.style.height = Math.min(textarea.scrollHeight, 160) + 'px';
   });
 }
 
-/* ─── INIT ALL ANIMATIONS ───────────────────────────────────────────── */
-function initAnimations() {
-  // Particles
-  const canvas = document.getElementById('particles-canvas');
-  if (canvas) {
-    const particles = new ParticleSystem(canvas);
-    // Only run when page is visible
-    document.addEventListener('visibilitychange', () => {
-      document.hidden ? particles.stop() : particles.start();
-    });
-    particles.start();
-    window._particles = particles;
-  }
+function initHudTicker() {
+  const ticker = document.getElementById('hud-ticker-text');
+  if (!ticker) return;
 
-  // Scroll effects
-  initNavScroll();
-  setupReveal();
-  new ScrollReveal();
-  initRipples();
-  initParallax();
-  initSmoothNav();
-
-  // Textarea resize
-  const textarea = document.getElementById('prompt-input');
-  if (textarea) autoResizeTextarea(textarea);
-
-  // Animate hero on load
-  animateHeroIn();
-}
-
-/* ─── HERO ENTRANCE ─────────────────────────────────────────────────── */
-function animateHeroIn() {
-  const elements = [
-    { id: 'hero-badge', delay: 0 },
-    { id: 'hero-title', delay: 100 },
-    { id: 'hero-subtitle', delay: 200 },
-    { id: 'hero-cta', delay: 300 },
-    { id: 'hero-stats', delay: 400 },
-    { id: 'hero-visual', delay: 500 },
+  const logs = [
+    "Neural pipeline listening. Enter prompt on the right to synthesize complete web software...",
+    "4x Display Pods synchronized on channel 01 [HTML5/CSS3/JS stream active]...",
+    "Gemini 2.5 Flash neural core ready. Response latency: 14ms...",
+    "Direct browser compilation primed. Live preview sandbox ready...",
+    "Prompt suggestion chips available: Netflix, Banking, Restaurant, Store, Portfolio..."
   ];
 
-  elements.forEach(({ id, delay }) => {
-    const el = document.getElementById(id);
-    if (!el) return;
-    el.style.opacity = '0';
-    el.style.transform = 'translateY(24px)';
+  let idx = 0;
+  setInterval(() => {
+    idx = (idx + 1) % logs.length;
+    ticker.style.opacity = '0';
     setTimeout(() => {
-      el.style.transition = 'opacity 0.6s ease, transform 0.6s cubic-bezier(0.34,1.56,0.64,1)';
-      el.style.opacity = '1';
-      el.style.transform = 'translateY(0)';
-    }, delay + 100);
+      ticker.textContent = logs[idx];
+      ticker.style.opacity = '1';
+    }, 280);
+  }, 4200);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   VENGEANCEUI ASCII GLITCH RIPPLE COMPONENT
+   ═══════════════════════════════════════════════════════════════════════ */
+const WAVE_THRESH = 3;
+const CHAR_MULT = 3;
+const ANIM_STEP = 40;
+const WAVE_BUF = 5;
+const DEFAULT_CHARS = '.,·-─~+:;=*π""┐┌┘┴┬╗╔╝╚╬╠╣╩╦║░▒▓█▄▀▌▐■!?&#$@0123456789*';
+
+function attachAsciiGlitchRipple(el, options = {}) {
+  const dur = options.dur || 1000;
+  const chars = options.chars || DEFAULT_CHARS;
+  const preserveSpaces = options.preserveSpaces !== false;
+  const spread = options.spread || 1.0;
+
+  let origTxt = el.textContent.trim();
+  if (!origTxt) return;
+  let origChars = origTxt.split('');
+  let isAnim = false;
+  let cursorPos = 0;
+  let waves = [];
+  let animId = null;
+  let isHover = false;
+  let origW = null;
+
+  function updateCursorPos(e) {
+    const rect = el.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const len = origTxt.length;
+    if (len === 0 || rect.width === 0) return;
+    const pos = Math.round((x / rect.width) * len);
+    cursorPos = Math.max(0, Math.min(pos, len - 1));
+  }
+
+  function stop() {
+    el.textContent = origTxt;
+    el.classList.remove('as');
+    if (origW !== null) {
+      el.style.width = '';
+      origW = null;
+    }
+    isAnim = false;
+    if (animId) {
+      cancelAnimationFrame(animId);
+      animId = null;
+    }
+  }
+
+  function calcWaveEffect(charIdx, t) {
+    let shouldAnim = false;
+    let resultChar = origChars[charIdx];
+
+    for (const w of waves) {
+      const age = t - w.startTime;
+      const prog = Math.min(age / dur, 1);
+      const dist = Math.abs(charIdx - w.startPos);
+      const maxDist = Math.max(w.startPos, origChars.length - w.startPos - 1);
+      const rad = (prog * (maxDist + WAVE_BUF)) / spread;
+
+      if (dist <= rad) {
+        shouldAnim = true;
+        const intens = Math.max(0, rad - dist);
+        if (intens <= WAVE_THRESH && intens > 0) {
+          const index = (dist * CHAR_MULT + Math.floor(age / ANIM_STEP)) % chars.length;
+          resultChar = chars[index];
+        }
+      }
+    }
+
+    return { shouldAnim, char: resultChar };
+  }
+
+  function genScrambledTxt(t) {
+    return origChars
+      .map((char, i) => {
+        if (preserveSpaces && char === ' ') return ' ';
+        const res = calcWaveEffect(i, t);
+        return res.shouldAnim ? res.char : char;
+      })
+      .join('');
+  }
+
+  function start() {
+    if (isAnim) return;
+
+    if (origW === null) {
+      origW = el.getBoundingClientRect().width;
+      el.style.width = `${origW}px`;
+    }
+
+    isAnim = true;
+    el.classList.add('as');
+
+    function animate() {
+      const t = Date.now();
+      waves = waves.filter((w) => t - w.startTime < dur);
+
+      if (waves.length === 0) {
+        stop();
+        return;
+      }
+
+      el.textContent = genScrambledTxt(t);
+      animId = requestAnimationFrame(animate);
+    }
+
+    animId = requestAnimationFrame(animate);
+  }
+
+  function startWave() {
+    if (!isAnim) {
+      origTxt = el.textContent;
+      origChars = origTxt.split('');
+    }
+    waves.push({
+      startPos: cursorPos,
+      startTime: Date.now(),
+      id: Math.random()
+    });
+
+    if (!isAnim) start();
+  }
+
+  el.addEventListener('mouseenter', (e) => {
+    isHover = true;
+    updateCursorPos(e);
+    startWave();
+  });
+
+  el.addEventListener('mousemove', (e) => {
+    if (!isHover) return;
+    const old = cursorPos;
+    updateCursorPos(e);
+    if (cursorPos !== old) startWave();
+  });
+
+  el.addEventListener('mouseleave', () => {
+    isHover = false;
   });
 }
 
-// Initialize on DOM ready
-document.addEventListener('DOMContentLoaded', initAnimations);
+function initAllAsciiGlitches() {
+  const selectors = [
+    '.brand-name',
+    '.notch-logo-text',
+    '.hero-title-accent',
+    '.hero-eyebrow',
+    '.btn-generate span',
+    '.pop-button span',
+    '.btn-clean-ghost',
+    '.notch-link span',
+    '.notch-login-btn span',
+    '.notch-signup-btn span',
+    '.retro-chip',
+    '.stat-label',
+    '.nav-badge',
+    '.hud-sys-name',
+    '.hud-metric-value',
+    '.hud-metric-label',
+    '.studio-3d-badge span',
+    '.welcome-badge',
+    '.ascii-glitch'
+  ];
+
+  document.querySelectorAll(selectors.join(', ')).forEach((el) => {
+    if (el.dataset.asciiInit) return;
+    el.dataset.asciiInit = 'true';
+    el.classList.add('ascii-glitch-text');
+    attachAsciiGlitchRipple(el);
+  });
+}
+
+function initSimpleUI() {
+  const homeInput = document.getElementById('hero-prompt-input');
+  const chatInput = document.getElementById('prompt-input');
+
+  autoResizeTextarea(homeInput);
+  autoResizeTextarea(chatInput);
+  initHudTicker();
+  initAllAsciiGlitches();
+}
+
+document.addEventListener('DOMContentLoaded', initSimpleUI);

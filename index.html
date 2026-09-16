@@ -4,271 +4,510 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>AI Software Generator — Design. Generate. Build. Instantly.</title>
-  <meta name="description" content="Generate entire software projects from a single prompt. Powered by Gemini AI." />
+  <title>AI Software Generator — Retro-Tech Dark</title>
+  <meta name="description" content="Generate complete web apps with AI. Describe your idea and get production-ready HTML, CSS & JavaScript code instantly." />
 
-  <!-- Fonts -->
+  <!-- Fonts: Orbitron + Inter + JetBrains Mono -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link
-    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap"
-    rel="stylesheet" />
-  <link rel="stylesheet"
-    href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css" />
+  <link rel="stylesheet" href="styles.css?v=2.4" />
 
-  <link rel="stylesheet" href="styles.css" />
-  <link rel="stylesheet" href="assets/animations.css" />
+  <!-- Three.js Module Importmap -->
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+        "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+      }
+    }
+  </script>
 </head>
 
 <body class="dark-theme" id="app-body">
 
-  <!-- ══ ANIMATED BACKGROUND ══ -->
-  <div id="bg-canvas-wrapper">
-    <canvas id="particles-canvas"></canvas>
-    <div class="bg-grid-overlay"></div>
-    <div class="bg-orb orb-1"></div>
-    <div class="bg-orb orb-2"></div>
-    <div class="bg-orb orb-3"></div>
-    <div class="noise-overlay"></div>
+  <!-- Global 3D Multi-Screen Rig Viewport (smoothly glides between Home and Studio Center) -->
+  <div class="computer-scene-global" id="computer-scene-global">
+    <canvas id="computer-canvas"></canvas>
   </div>
 
-  <!-- ══ TOAST ══ -->
+  <!-- Toast Notification Container -->
   <div id="toast-container" aria-live="polite"></div>
 
-  <!-- ══ LOADING OVERLAY ══ -->
+  <!-- Loading Overlay -->
   <div class="loading-overlay" id="loading-overlay" style="display:none">
     <div class="loading-content">
-      <div class="loading-orb">
-        <div class="orb-ring ring-1"></div>
-        <div class="orb-ring ring-2"></div>
-        <div class="orb-ring ring-3"></div>
-        <div class="orb-core">
-          <svg width="32" height="32" viewBox="0 0 24 24" fill="none">
-            <path d="M12 2L18 8V20L12 24L6 20V8L12 2Z" fill="#5B8CFF" />
-          </svg>
-        </div>
-      </div>
+      <div class="simple-spinner"></div>
       <div class="loading-text-group">
-        <p class="loading-main-text" id="loading-main-text">Analyzing Request...</p>
+        <p class="loading-main-text" id="loading-main-text">Generating your software...</p>
         <div class="loading-steps" id="loading-steps">
           <div class="loading-step active" id="step-0">Planning Project Structure</div>
-          <div class="loading-step" id="step-1">Generating HTML Components</div>
-          <div class="loading-step" id="step-2">Writing CSS Styles</div>
-          <div class="loading-step" id="step-3">Adding JavaScript Logic</div>
-          <div class="loading-step" id="step-4">Finalizing &amp; Packaging</div>
+          <div class="loading-step" id="step-1">Writing HTML Components</div>
+          <div class="loading-step" id="step-2">Adding CSS Styles</div>
+          <div class="loading-step" id="step-3">Implementing JavaScript Logic</div>
+          <div class="loading-step" id="step-4">Finalizing Project Files</div>
         </div>
-        <div class="loading-bar-track" style="margin-top:24px">
+        <div class="loading-bar-track">
           <div class="loading-bar-fill" id="loading-bar" style="width:20%"></div>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- ════════════════════════════════════════════════════════
-       SCREEN 1 — HOME LANDING
-  ════════════════════════════════════════════════════════ -->
+  <!-- ═══════════════════════════════════════════════════════════════════
+       SCREEN 1 — RETRO-TECH HOME SCREEN
+       ═══════════════════════════════════════════════════════════════════ -->
   <div id="screen-home" class="app-screen active">
 
-    <!-- Home Nav -->
-    <nav class="home-nav">
-      <div class="nav-logo">
-        <div class="logo-icon">
-          <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
-            <defs>
-              <linearGradient id="lg1" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stop-color="#5B8CFF" />
-                <stop offset="100%" stop-color="#7A5CFF" />
-              </linearGradient>
-            </defs>
-            <path d="M14 2L24 8V20L14 26L4 20V8L14 2Z" fill="url(#lg1)" />
-            <circle cx="14" cy="14" r="3" fill="white" />
+    <!-- Background dot grid -->
+    <div class="home-bg" aria-hidden="true"></div>
+
+    <!-- ═══════════════════════════════════════════════════════════════════
+         VENGEANCEUI NOTCH NAVBAR (Exact 3-Slice Responsive Architecture)
+         ═══════════════════════════════════════════════════════════════════ -->
+    <header class="notch-navbar" id="notch-navbar">
+      <!-- Left Side Bar - Flexible width (h-10 / 40px) -->
+      <div class="notch-wing notch-wing-left">
+        <svg class="notch-svg-lines" preserveAspectRatio="none">
+          <line x1="0" y1="39.5" x2="100%" y2="39.5" stroke="currentColor" stroke-opacity="0.12" stroke-width="0.7" />
+          <line x1="0" y1="36.5" x2="100%" y2="36.5" stroke="currentColor" stroke-opacity="0.12" stroke-width="0.7" />
+        </svg>
+      </div>
+
+      <!-- Responsive Notch Container - 3 Slices (h-16 / 64px) -->
+      <div class="notch-container">
+        <!-- Left Slice (Corner) -->
+        <div class="notch-slice notch-slice-left">
+          <div class="notch-slice-bg"></div>
+          <svg class="notch-slice-svg" viewBox="0 0 50 64" preserveAspectRatio="none">
+            <path d="M0 39.5 C25 39.5 25 63.5 50 63.5" fill="none" stroke="currentColor" stroke-opacity="0.12" stroke-width="0.7" />
+            <path d="M0 36.5 C25 36.5 25 60.5 50 60.5" fill="none" stroke="currentColor" stroke-opacity="0.12" stroke-width="0.7" />
           </svg>
         </div>
-        <div class="logo-text">
-          <span class="logo-main">AI Software Generator</span>
-        </div>
-      </div>
-      <div class="home-nav-right">
-        <button class="btn-icon" id="theme-toggle-home" aria-label="Toggle theme">
-          <svg class="icon-sun" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-            stroke-width="2">
-            <circle cx="12" cy="12" r="5" />
-            <line x1="12" y1="1" x2="12" y2="3" />
-            <line x1="12" y1="21" x2="12" y2="23" />
-            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
-            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
-            <line x1="1" y1="12" x2="3" y2="12" />
-            <line x1="21" y1="12" x2="23" y2="12" />
-            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
-            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
+
+        <!-- Center Slice (Flexible Content Area) -->
+        <div class="notch-slice notch-slice-center">
+          <div class="notch-slice-bg"></div>
+          <svg class="notch-slice-svg" preserveAspectRatio="none">
+            <line x1="0" y1="63.5" x2="100%" y2="63.5" stroke="currentColor" stroke-opacity="0.12" stroke-width="0.7" />
+            <line x1="0" y1="60.5" x2="100%" y2="60.5" stroke="currentColor" stroke-opacity="0.12" stroke-width="0.7" />
           </svg>
-          <svg class="icon-moon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-            stroke-width="2" style="display:none">
-            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
-          </svg>
-        </button>
-        <a href="https://github.com" target="_blank" class="btn-nav-ghost">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
-            <path
-              d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z" />
-          </svg>
-          GitHub
-        </a>
-      </div>
-    </nav>
 
-    <!-- Hero -->
-    <div class="home-hero">
-      <div class="hero-badge">
-        <span class="badge-dot"></span>
-        <span>Powered by Gemini AI · Free to Use</span>
-      </div>
+          <!-- Content Layer -->
+          <div class="notch-content">
+            <!-- Desktop Left Nav -->
+            <nav class="notch-nav notch-nav-left">
+              <a href="#home" class="notch-link" id="notch-link-home">
+                <svg class="notch-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+                  <polyline points="9 22 9 12 15 12 15 22"/>
+                </svg>
+                <span class="ascii-glitch">Home</span>
+              </a>
+              <a href="#about" class="notch-link" id="notch-link-about">
+                <svg class="notch-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                  <circle cx="12" cy="7" r="4"/>
+                </svg>
+                <span class="ascii-glitch">About</span>
+              </a>
+              <a href="#events" class="notch-link" id="notch-link-events">
+                <svg class="notch-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+                  <line x1="16" y1="2" x2="16" y2="6"/>
+                  <line x1="8" y1="2" x2="8" y2="6"/>
+                  <line x1="3" y1="10" x2="21" y2="10"/>
+                </svg>
+                <span class="ascii-glitch">Events</span>
+              </a>
+            </nav>
 
-      <h1 class="home-title">
-        <span>Generate Entire</span>
-        <span class="gradient-text">Software Projects</span>
-        <span>with AI — Instantly</span>
-      </h1>
+            <!-- Mobile Menu Button (Left) -->
+            <button class="notch-mobile-btn" id="notch-mobile-toggle" aria-label="Toggle menu">
+              <svg class="menu-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="3" y1="12" x2="21" y2="12"/>
+                <line x1="3" y1="6" x2="21" y2="6"/>
+                <line x1="3" y1="18" x2="21" y2="18"/>
+              </svg>
+              <svg class="close-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none">
+                <line x1="18" y1="6" x2="6" y2="18"/>
+                <line x1="6" y1="6" x2="18" y2="18"/>
+              </svg>
+            </button>
 
-      <p class="home-subtitle">
-        Describe any app in plain English. Our AI writes the complete code,
-        opens it in a VS Code-style editor, and lets you preview it live.
-      </p>
+            <!-- Logo (Center) -->
+            <div class="notch-logo-wrap">
+              <a href="#home" class="notch-logo-link" id="notch-logo-btn">
+                <svg class="notch-logo-icon" width="24" height="24" viewBox="0 0 374 313" fill="none">
+                  <path d="M247 181L237.5 236.5L373.5 313L247 181Z" fill="currentColor"/>
+                  <path d="M187.5 0L154 209L173.5 195L237.5 83L187.5 0Z" fill="currentColor"/>
+                  <path d="M373.5 313L253.761 110.5L197.5 195L237.5 181L212.5 222L0 313H187.5L237.5 236.5L247 181L373.5 313Z" fill="currentColor"/>
+                  <path d="M187.5 0L0 313L154 209L187.5 0Z" fill="currentColor"/>
+                </svg>
+                <span class="notch-logo-text ascii-glitch">AI GENERATOR</span>
+              </a>
+            </div>
 
-      <button class="btn-start-building" id="start-building-btn">
-        <span class="start-btn-glow"></span>
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-          <polygon points="5 3 19 12 5 21 5 3" />
-        </svg>
-        <span>Start Building</span>
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-          <line x1="5" y1="12" x2="19" y2="12" />
-          <polyline points="12 5 19 12 12 19" />
-        </svg>
-      </button>
+            <!-- Desktop Right Nav -->
+            <nav class="notch-nav notch-nav-right">
+              <a href="#sponsors" class="notch-link" id="notch-link-sponsors">
+                <svg class="notch-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+                </svg>
+                <span class="ascii-glitch">Sponsors</span>
+              </a>
+              <a href="#pricing" class="notch-link" id="notch-link-pricing">
+                <svg class="notch-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="1" y="4" width="22" height="16" rx="2" ry="2"/>
+                  <line x1="1" y1="10" x2="23" y2="10"/>
+                </svg>
+                <span class="ascii-glitch">Pricing</span>
+              </a>
+              <a href="#studio" class="notch-link notch-studio-highlight" id="notch-link-studio">
+                <svg class="notch-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="16 18 22 12 16 6"/>
+                  <polyline points="8 6 2 12 8 18"/>
+                </svg>
+                <span class="ascii-glitch">Studio</span>
+              </a>
 
-      <!-- Example chips -->
-      <div class="home-examples">
-        <span class="example-label">Try:</span>
-        <button class="example-chip" data-prompt="Create a modern Netflix clone with dark theme">🎬 Netflix
-          Clone</button>
-        <button class="example-chip" data-prompt="Build a banking management dashboard">🏦 Banking App</button>
-        <button class="example-chip" data-prompt="Create a beautiful restaurant website">🍽️ Restaurant Site</button>
-        <button class="example-chip" data-prompt="Build a modern e-commerce store">🛒 E-Commerce</button>
-        <button class="example-chip" data-prompt="Create a stunning portfolio website">💼 Portfolio</button>
-      </div>
+              <div class="notch-action-divider"></div>
 
-      <!-- Mini stat row -->
-      <div class="home-stats">
-        <div class="home-stat"><span class="stat-n">50K+</span><span class="stat-l">Projects</span></div>
-        <div class="stat-sep"></div>
-        <div class="home-stat"><span class="stat-n">Gemini AI</span><span class="stat-l">Powered</span></div>
-        <div class="stat-sep"></div>
-        <div class="home-stat"><span class="stat-n">Instant</span><span class="stat-l">Preview</span></div>
-      </div>
-    </div>
+              <!-- Theme Toggle Button -->
+              <button class="notch-theme-btn" id="theme-toggle-notch" aria-label="Toggle theme">
+                <svg class="icon-sun" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/>
+                  <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+                  <line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/>
+                </svg>
+                <svg class="icon-moon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none">
+                  <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+                </svg>
+              </button>
 
-    <!-- Floating code card decoration -->
-    <div class="home-deco">
-      <div class="deco-card deco-card-1">
-        <div class="deco-dots"><span></span><span></span><span></span></div>
-        <pre class="deco-code"><code>// AI Generated
-const app = create({
-  type: "banking",
-  theme: "dark",
-  pages: 8
-});</code></pre>
-      </div>
-      <div class="deco-card deco-card-2">
-        <div class="deco-icon-row">
-          <span>✅</span>
-          <div>
-            <div class="deco-name">Portfolio Site</div>
-            <div class="deco-meta">6 files · HTML CSS JS</div>
+              <button class="notch-login-btn" id="notch-login-btn">
+                <span class="ascii-glitch">Log in</span>
+              </button>
+              <button class="notch-signup-btn" id="notch-signup-btn">
+                <span class="ascii-glitch">Sign up</span>
+              </button>
+            </nav>
+
+            <!-- Mobile Right Actions -->
+            <div class="notch-mobile-actions">
+              <button class="notch-theme-btn" id="theme-toggle-notch-mobile" aria-label="Toggle theme">
+                <svg class="icon-sun" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/>
+                  <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+                  <line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/>
+                </svg>
+                <svg class="icon-moon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none">
+                  <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+                </svg>
+              </button>
+            </div>
           </div>
         </div>
+
+        <!-- Right Slice (Corner) -->
+        <div class="notch-slice notch-slice-right">
+          <div class="notch-slice-bg"></div>
+          <svg class="notch-slice-svg" viewBox="0 0 50 64" preserveAspectRatio="none">
+            <path d="M0 63.5 C25 63.5 25 39.5 50 39.5" fill="none" stroke="currentColor" stroke-opacity="0.12" stroke-width="0.7" />
+            <path d="M0 60.5 C25 60.5 25 36.5 50 36.5" fill="none" stroke="currentColor" stroke-opacity="0.12" stroke-width="0.7" />
+          </svg>
+        </div>
+      </div>
+
+      <!-- Right Side Bar - Flexible width (h-10 / 40px) -->
+      <div class="notch-wing notch-wing-right">
+        <svg class="notch-svg-lines" preserveAspectRatio="none">
+          <line x1="0" y1="39.5" x2="100%" y2="39.5" stroke="currentColor" stroke-opacity="0.12" stroke-width="0.7" />
+          <line x1="0" y1="36.5" x2="100%" y2="36.5" stroke="currentColor" stroke-opacity="0.12" stroke-width="0.7" />
+        </svg>
+      </div>
+    </header>
+
+    <!-- Mobile Drawer Overlay -->
+    <div class="notch-mobile-drawer" id="notch-mobile-drawer" style="display:none">
+      <nav class="notch-mobile-nav">
+        <a href="#home" class="notch-mobile-item" id="mobile-nav-home">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+          <span class="ascii-glitch">Home</span>
+        </a>
+        <a href="#about" class="notch-mobile-item" id="mobile-nav-about">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          <span class="ascii-glitch">About</span>
+        </a>
+        <a href="#events" class="notch-mobile-item" id="mobile-nav-events">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          <span class="ascii-glitch">Events</span>
+        </a>
+        <a href="#sponsors" class="notch-mobile-item" id="mobile-nav-sponsors">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+          <span class="ascii-glitch">Sponsors</span>
+        </a>
+        <a href="#pricing" class="notch-mobile-item" id="mobile-nav-pricing">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+          <span class="ascii-glitch">Pricing</span>
+        </a>
+        <a href="#studio" class="notch-mobile-item notch-mobile-studio" id="mobile-nav-studio">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+          <span class="ascii-glitch">Enter Studio</span>
+        </a>
+        <div class="notch-mobile-divider"></div>
+        <button class="notch-mobile-item" id="mobile-login-btn">Log in</button>
+        <button class="notch-mobile-signup-btn" id="mobile-signup-btn">Sign up</button>
+      </nav>
+    </div>
+
+    <!-- Hero Split: LEFT = Computer  |  RIGHT = Content -->
+    <main class="retro-hero">
+
+      <!-- ═══════════════════════════════════════════════════════════════════
+           LEFT — 3D ISOMETRIC COMPUTER ILLUSTRATION (ANCHOR)
+           ═══════════════════════════════════════════════════════════════════ -->
+      <div class="hero-right">
+        <div class="hero-divider"></div>
+
+        <!-- Corner brackets -->
+        <div class="corner-deco tl"></div>
+        <div class="corner-deco tr"></div>
+        <div class="corner-deco bl"></div>
+        <div class="corner-deco br"></div>
+
+        <div class="computer-scene" id="hero-3d-anchor">
+          <!-- Global 3D multi-screen rig aligns here on Home Screen -->
+        </div>
+
+        <!-- Cyberpunk System Telemetry HUD -->
+        <div class="rig-telemetry-hud" id="rig-telemetry-hud">
+          <div class="hud-header">
+            <div class="hud-status-indicator">
+              <span class="hud-ping-dot"></span>
+              <span class="hud-sys-name">NEURAL CLUSTER · ACTIVE</span>
+            </div>
+            <div class="hud-tags">
+              <span class="hud-chip"><span class="hud-chip-dot"></span> 4x CRT SYNCED</span>
+              <span class="hud-chip">LATENCY: 14ms</span>
+            </div>
+          </div>
+
+          <div class="hud-metrics-grid">
+            <div class="hud-metric-card">
+              <div class="hud-card-top">
+                <span class="hud-metric-label">CORE PIPELINE</span>
+                <span class="hud-badge green">ONLINE</span>
+              </div>
+              <div class="hud-metric-value">GEMINI 2.5 FLASH</div>
+              <div class="hud-metric-sub">Neural Code Synthesis</div>
+            </div>
+
+            <div class="hud-metric-card">
+              <div class="hud-card-top">
+                <span class="hud-metric-label">OUTPUT MATRIX</span>
+                <span class="hud-badge blue">READY</span>
+              </div>
+              <div class="hud-metric-value">HTML5 · CSS · JS</div>
+              <div class="hud-metric-sub">Browser-Native SPA</div>
+            </div>
+
+            <div class="hud-metric-card">
+              <div class="hud-card-top">
+                <span class="hud-metric-label">DEPLOY SYSTEM</span>
+                <span class="hud-badge zinc">ACTIVE</span>
+              </div>
+              <div class="hud-metric-value">PREVIEW + ZIP</div>
+              <div class="hud-metric-sub">Instant 1-Click Export</div>
+            </div>
+          </div>
+
+          <div class="hud-terminal-log">
+            <span class="log-cursor">&gt;</span>
+            <span class="log-label">SYS_LOG:</span>
+            <span class="log-ticker" id="hud-ticker-text">Neural pipeline listening. Enter prompt on the right to synthesize complete web software...</span>
+          </div>
+        </div>
+
+        <!-- VengeanceUI Pop Button to IDE Code Studio -->
+        <button class="pop-button" id="open-studio-pop-btn" title="Open IDE Code Studio">
+          <span>ENTER IDE CODE STUDIO</span>
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <line x1="5" y1="12" x2="19" y2="12"/>
+            <polyline points="12 5 19 12 12 19"/>
+          </svg>
+        </button>
+      </div>
+
+      <!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+           RIGHT — TEXT CONTENT + PROMPT
+      â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
+      <div class="hero-left">
+
+        <!-- Eyebrow badge -->
+        <div class="hero-eyebrow">
+          <span class="hero-eyebrow-dot"></span>
+          GEMINI · AI-POWERED CODE GENERATOR
+        </div>
+
+        <!-- Title -->
+        <h1 class="hero-title">
+          <span class="ascii-glitch">What do you</span><br />
+          <span class="ascii-glitch">want to</span> <span class="hero-title-accent ascii-glitch">build</span> <span class="ascii-glitch">today?</span>
+        </h1>
+
+        <p class="hero-desc">
+          Describe any web app, tool, or website in plain language.
+          The AI writes complete code and opens a live preview instantly.
+        </p>
+
+        <!-- Glassmorphism Prompt Card -->
+        <div class="hero-prompt-card" id="hero-prompt-card">
+          <textarea
+            id="hero-prompt-input"
+            class="hero-prompt-textarea"
+            placeholder="e.g. Build a modern Netflix clone with dark theme, search, and video cards..."
+            rows="3"
+          ></textarea>
+          <div class="prompt-card-footer">
+            <span class="prompt-card-hint">↵ Enter or click Generate</span>
+            <button class="btn-generate" id="hero-generate-btn">
+              <span>Generate</span>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <line x1="5" y1="12" x2="19" y2="12"/>
+                <polyline points="12 5 19 12 12 19"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- Quick suggestion chips -->
+        <div class="hero-chips-row">
+          <span class="chips-label">TRY &rarr;</span>
+          <button class="retro-chip" data-prompt="Create a modern Netflix clone with dark theme and movie cards">🎬 Netflix</button>
+          <button class="retro-chip" data-prompt="Build a clean banking dashboard with balance and transactions">&#127974; Banking</button>
+          <button class="retro-chip" data-prompt="Create a beautiful restaurant website with menu and booking">&#127869; Restaurant</button>
+          <button class="retro-chip" data-prompt="Build an online e-commerce store with cart and checkout">🛒 Store</button>
+          <button class="retro-chip" data-prompt="Create a modern portfolio website with projects section">💼 Portfolio</button>
+        </div>
+      </div>
+
+    </main>
+
+    <!-- Stats strip at bottom -->
+    <div class="hero-stats-strip">
+      <div class="stat-item">
+        <div class="stat-icon">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/>
+          </svg>
+        </div>
+        <div class="stat-text">
+          <span class="stat-label">COMPLETE CODE</span>
+          <span class="stat-desc">Full HTML, CSS &amp; JavaScript</span>
+        </div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-icon">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="2" y="3" width="20" height="14" rx="2"/>
+            <line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/>
+          </svg>
+        </div>
+        <div class="stat-text">
+          <span class="stat-label">LIVE PREVIEW</span>
+          <span class="stat-desc">Instant interactive rendering</span>
+        </div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-icon">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+            <polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
+          </svg>
+        </div>
+        <div class="stat-text">
+          <span class="stat-label">ONE-CLICK EXPORT</span>
+          <span class="stat-desc">Download full ZIP project</span>
+        </div>
       </div>
     </div>
-  </div>
 
-  <!-- ════════════════════════════════════════════════════════
-       SCREEN 2 — APP (Chat + IDE split)
-  ════════════════════════════════════════════════════════ -->
+  </div><!-- /#screen-home -->
+
+  <!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+       SCREEN 2 — WORKSPACE (Chat + IDE)
+  â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
   <div id="screen-app" class="app-screen">
 
-    <!-- App Top Bar -->
-    <header class="app-topbar" id="app-topbar">
-      <div class="app-topbar-left">
-        <button class="btn-icon app-back-btn" id="back-home-btn" title="Back to Home">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <polyline points="15 18 9 12 15 6" />
+    <header class="workspace-topbar" id="app-topbar">
+      <div class="topbar-left">
+        <button class="btn-icon" id="back-home-btn" title="Back to Home">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="15 18 9 12 15 6"/>
           </svg>
         </button>
-        <div class="nav-logo" style="cursor:default">
-          <div class="logo-icon">
-            <svg width="22" height="22" viewBox="0 0 28 28" fill="none">
-              <path d="M14 2L24 8V20L14 26L4 20V8L14 2Z" fill="url(#lg1)" />
-              <circle cx="14" cy="14" r="3" fill="white" />
-            </svg>
-          </div>
-          <span class="logo-main" style="font-size:.85rem">AI Software Generator</span>
+        <div class="brand-badge">
+          <svg width="16" height="16" viewBox="0 0 374 313" fill="none" style="color:var(--text-primary)">
+            <path d="M247 181L237.5 236.5L373.5 313L247 181Z" fill="currentColor"/>
+            <path d="M187.5 0L154 209L173.5 195L237.5 83L187.5 0Z" fill="currentColor"/>
+            <path d="M373.5 313L253.761 110.5L197.5 195L237.5 181L212.5 222L0 313H187.5L237.5 236.5L247 181L373.5 313Z" fill="currentColor"/>
+            <path d="M187.5 0L0 313L154 209L187.5 0Z" fill="currentColor"/>
+          </svg>
+          <span>AI GENERATOR</span>
         </div>
       </div>
 
-      <!-- IDE Project Info (shown after generation) -->
-      <div class="app-topbar-center" id="app-topbar-center" style="display:none">
-        <div class="ide-project-badge">
-          <span class="ide-project-name" id="ide-project-name">Project</span>
-          <span class="ide-project-meta" id="ide-project-meta"></span>
+      <div class="topbar-center" id="app-topbar-center" style="display:none">
+        <div class="project-info-pill">
+          <span class="project-name-text" id="ide-project-name">Project</span>
+          <span class="project-meta-text" id="ide-project-meta"></span>
         </div>
-        <div class="ide-view-tabs-wrap">
-          <button class="ide-tab active" id="tab-code" data-view="code">
+        <div class="view-toggle-tabs">
+          <button class="tab-btn active" id="tab-code" data-view="code">
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <polyline points="16 18 22 12 16 6" />
-              <polyline points="8 6 2 12 8 18" />
+              <polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/>
             </svg>
             Code
           </button>
-          <button class="ide-tab" id="tab-output" data-view="output">
+          <button class="tab-btn" id="tab-output" data-view="output">
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <rect x="2" y="3" width="20" height="14" rx="2" />
-              <line x1="8" y1="21" x2="16" y2="21" />
-              <line x1="12" y1="17" x2="12" y2="21" />
+              <rect x="2" y="3" width="20" height="14" rx="2"/>
+              <line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/>
             </svg>
             Preview
           </button>
         </div>
       </div>
 
-      <div class="app-topbar-right">
-        <!-- IDE Actions (shown after generation) -->
+      <div class="topbar-right">
         <div class="ide-action-group" id="ide-action-group" style="display:none">
-          <button class="btn-top-action" id="copy-all-btn">
+          <button class="btn-action" id="copy-all-btn">
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <rect x="9" y="9" width="13" height="13" rx="2" />
-              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+              <rect x="9" y="9" width="13" height="13" rx="2"/>
+              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
             </svg>
             Copy
           </button>
-          <button class="btn-top-action" id="download-zip-btn">
+          <button class="btn-action" id="download-zip-btn">
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-              <polyline points="7 10 12 15 17 10" />
-              <line x1="12" y1="15" x2="12" y2="3" />
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+              <polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
             </svg>
-            Download ZIP
+            ZIP
           </button>
-          <button class="btn-top-action" id="regenerate-btn">
+          <button class="btn-action" id="regenerate-btn">
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <polyline points="23 4 23 10 17 10" />
-              <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10" />
+              <polyline points="23 4 23 10 17 10"/>
+              <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/>
             </svg>
-            Regenerate
+            Retry
           </button>
-          <button class="btn-top-action btn-danger" id="clear-ide-btn">
+          <button class="btn-action btn-danger" id="clear-ide-btn">
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <polyline points="3 6 5 6 21 6" />
-              <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2" />
+              <polyline points="3 6 5 6 21 6"/>
+              <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/>
             </svg>
             Clear
           </button>
@@ -276,315 +515,233 @@ const app = create({
 
         <div class="topbar-divider" id="topbar-divider" style="display:none"></div>
 
-        <button class="btn-icon" id="theme-toggle" aria-label="Toggle theme">
-          <svg class="icon-sun" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-            stroke-width="2">
-            <circle cx="12" cy="12" r="5" />
-            <line x1="12" y1="1" x2="12" y2="3" />
-            <line x1="12" y1="21" x2="12" y2="23" />
-            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
-            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
-            <line x1="1" y1="12" x2="3" y2="12" />
-            <line x1="21" y1="12" x2="23" y2="12" />
+        <button class="btn-icon" id="theme-toggle" title="Toggle theme">
+          <svg class="icon-sun" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="5"/>
+            <line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/>
           </svg>
-          <svg class="icon-moon" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-            stroke-width="2" style="display:none">
-            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+          <svg class="icon-moon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
           </svg>
         </button>
 
-        <button class="btn-new-chat-top" id="new-chat-btn">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-            <line x1="12" y1="5" x2="12" y2="19" />
-            <line x1="5" y1="12" x2="19" y2="12" />
-          </svg>
-          New Chat
-        </button>
+        <button class="btn-new-chat" id="new-chat-btn"><span>+ New Chat</span></button>
 
-        <!-- API Key input in topbar -->
-        <div class="api-key-topbar" id="api-key-topbar">
-          <input type="password" id="api-key-input" class="api-key-input-top" placeholder="Gemini API Key..."
-            aria-label="Gemini API Key" />
-          <button class="btn-save-api-top" id="save-api-btn">Save</button>
-          <button class="btn-icon api-eye-btn" id="api-eye-btn">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
-              <circle cx="12" cy="12" r="3" />
+        <div class="api-key-box" id="api-key-topbar">
+          <input type="password" id="api-key-input" class="api-key-input" placeholder="Gemini API Key..." />
+          <button class="btn-save-key" id="save-api-btn">Save</button>
+          <button class="btn-icon key-eye" id="api-eye-btn">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+              <circle cx="12" cy="12" r="3"/>
             </svg>
           </button>
         </div>
       </div>
     </header>
 
-    <!-- App Body — IDE panel + Chat section side by side -->
-    <div class="app-body-split" id="app-body-split">
+    <div class="workspace-body" id="app-body-split">
 
-      <!-- ── IDE PANEL (slides in from left) ── -->
       <div class="ide-panel" id="ide-panel">
-
-        <!-- File Explorer -->
         <div class="file-explorer" id="file-explorer">
           <div class="explorer-header">
-            <span class="explorer-title">EXPLORER</span>
-            <div class="explorer-search-wrap">
-              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <circle cx="11" cy="11" r="8" />
-                <line x1="21" y1="21" x2="16.65" y2="16.65" />
-              </svg>
-              <input type="text" id="file-search-input" placeholder="Search files…" aria-label="Search files" />
+            <span class="explorer-title">FILES</span>
+            <div class="search-input-wrap">
+              <input type="text" id="file-search-input" placeholder="Search files—¦" />
             </div>
           </div>
           <div class="explorer-project-info" id="explorer-project-info">
-            <div class="exp-info-row"><span class="exp-info-label">Project</span><span class="exp-info-value"
-                id="exp-project-name">—</span></div>
-            <div class="exp-info-row"><span class="exp-info-label">Files</span><span class="exp-info-value"
-                id="exp-files-count">—</span></div>
-            <div class="exp-info-row"><span class="exp-info-label">Generated</span><span class="exp-info-value"
-                id="exp-gen-time">—</span></div>
+            <div class="info-row"><span class="info-label">Project</span><span class="info-val" id="exp-project-name">—</span></div>
+            <div class="info-row"><span class="info-label">Files</span><span class="info-val" id="exp-files-count">—</span></div>
+            <div class="info-row"><span class="info-label">Time</span><span class="info-val" id="exp-gen-time">—</span></div>
           </div>
           <div class="file-tree" id="file-tree"></div>
         </div>
 
-        <!-- Editor Area -->
         <div class="editor-area" id="editor-area">
           <div class="editor-tabs-bar" id="editor-tabs-bar"></div>
-
-          <!-- Code View -->
           <div class="code-view" id="code-view">
             <div id="monaco-container" style="width:100%;height:100%;"></div>
           </div>
-
-          <!-- Output / Preview View -->
           <div class="output-view" id="output-view" style="display:none">
-            <div class="preview-bar">
-              <div class="preview-address-bar">
-                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <circle cx="12" cy="12" r="10" />
-                </svg>
-                <span id="preview-url">preview://generated-project</span>
-              </div>
-              <div class="preview-controls">
+            <div class="preview-header-bar">
+              <div class="preview-url-pill"><span id="preview-url">preview://project</span></div>
+              <div class="preview-actions">
                 <button class="btn-icon preview-btn" id="preview-refresh-btn" title="Refresh">
                   <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <polyline points="23 4 23 10 17 10" />
-                    <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10" />
+                    <polyline points="23 4 23 10 17 10"/>
+                    <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/>
                   </svg>
                 </button>
                 <button class="btn-icon preview-btn" id="preview-fullscreen-btn" title="Open in new window">
                   <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <polyline points="15 3 21 3 21 9" />
-                    <polyline points="9 21 3 21 3 15" />
-                    <line x1="21" y1="3" x2="14" y2="10" />
-                    <line x1="3" y1="21" x2="10" y2="14" />
+                    <polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/>
+                    <line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/>
                   </svg>
                 </button>
               </div>
             </div>
-            <iframe id="preview-frame" title="Live Preview" allowfullscreen
-              style="flex:1;border:none;width:100%;min-height:0;display:block;"></iframe>
+            <iframe id="preview-frame" title="Live Preview" allowfullscreen style="flex:1;border:none;width:100%;height:100%;"></iframe>
           </div>
         </div>
       </div>
 
-      <!-- ── RESIZE HANDLE ── -->
       <div class="resize-handle" id="resize-handle" style="display:none"></div>
 
-      <!-- ── CHAT SECTION ── -->
       <div class="chat-section" id="chat-section">
-
-        <!-- Chat Sidebar (history) -->
         <aside class="sidebar-chat" id="sidebar-chat">
-          <div class="sidebar-header">
-            <button class="btn-new-chat" id="new-chat-sidebar-btn">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                <line x1="12" y1="5" x2="12" y2="19" />
-                <line x1="5" y1="12" x2="19" y2="12" />
-              </svg>
-              New Chat
-            </button>
-            <button class="btn-icon sidebar-collapse-btn" id="sidebar-collapse-btn" title="Collapse">
+          <div class="sidebar-top">
+            <button class="btn-sidebar-new" id="new-chat-sidebar-btn">+ New Chat</button>
+            <button class="btn-icon" id="sidebar-collapse-btn" title="Collapse sidebar">
               <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <polyline points="15 18 9 12 15 6" />
+                <polyline points="15 18 9 12 15 6"/>
               </svg>
             </button>
           </div>
-          <div class="sidebar-search">
-            <div class="search-input-wrap">
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <circle cx="11" cy="11" r="8" />
-                <line x1="21" y1="21" x2="16.65" y2="16.65" />
-              </svg>
-              <input type="text" id="chat-search-input" placeholder="Search chats…" aria-label="Search chats" />
-            </div>
+          <div class="sidebar-search-box">
+            <input type="text" id="chat-search-input" placeholder="Search chats—¦" />
           </div>
-          <div class="sidebar-section-label">Pinned</div>
-          <div class="chat-list pinned-chats" id="pinned-chats-list"></div>
-          <div class="sidebar-section-label">Recent</div>
-          <div class="chat-list" id="chat-history-list">
-            <div class="chat-empty-state" id="chat-empty-state">
-              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
-              </svg>
-              <p>No chats yet.<br />Start building!</p>
+          <div class="chat-history-container">
+            <div class="sidebar-label">Pinned</div>
+            <div class="chat-list" id="pinned-chats-list"></div>
+            <div class="sidebar-label">Recent</div>
+            <div class="chat-list" id="chat-history-list">
+              <div class="chat-empty-state" id="chat-empty-state"><p>No chat history yet</p></div>
             </div>
           </div>
         </aside>
 
-        <!-- Chat Main -->
         <main class="chat-main" id="chat-main">
-          <!-- Chat top bar -->
-          <div class="chat-topbar" id="chat-topbar">
-            <div class="chat-topbar-left">
-              <button class="btn-icon" id="sidebar-toggle-btn" title="Toggle Sidebar">
-                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <line x1="3" y1="6" x2="21" y2="6" />
-                  <line x1="3" y1="12" x2="21" y2="12" />
-                  <line x1="3" y1="18" x2="21" y2="18" />
+          <div class="chat-header">
+            <div class="chat-header-left">
+              <button class="btn-icon" id="sidebar-toggle-btn" title="Toggle history">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <line x1="3" y1="6" x2="21" y2="6"/>
+                  <line x1="3" y1="12" x2="21" y2="12"/>
+                  <line x1="3" y1="18" x2="21" y2="18"/>
                 </svg>
               </button>
-              <span class="chat-title-text" id="chat-title-display">New Conversation</span>
+              <span class="chat-current-title" id="chat-title-display">New Conversation</span>
             </div>
-            <div class="chat-topbar-right">
-              <div class="model-badge">
-                <span class="model-dot"></span>
-                <span>Gemini Flash Lite</span>
+            <div class="chat-header-right">
+              <div class="simple-status">
+                <span class="status-dot" id="ai-status-dot"></span>
+                <span class="status-text" id="ai-status-text">Ready</span>
               </div>
             </div>
           </div>
 
-          <!-- Messages Area -->
-          <div class="messages-area" id="messages-area">
+                    <div class="messages-area" id="messages-area">
             <div class="welcome-state" id="welcome-state">
-              <div class="welcome-icon">
-                <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
-                  <defs>
-                    <linearGradient id="wg" x1="0%" y1="0%" x2="100%" y2="100%">
-                      <stop offset="0%" stop-color="#5B8CFF" />
-                      <stop offset="100%" stop-color="#00F5FF" />
-                    </linearGradient>
-                  </defs>
-                  <path d="M24 4L40 14V34L24 44L8 34V14L24 4Z" fill="url(#wg)" opacity="0.2" />
-                  <circle cx="24" cy="24" r="8" fill="url(#wg)" />
-                </svg>
-              </div>
-              <h2 class="welcome-title">What will you build today?</h2>
-              <p class="welcome-subtitle">Describe any software project and watch AI generate the complete codebase
-                instantly.</p>
+              <!-- Studio 3D rig anchor where the multi-screen rig glides and rotates in 360 -->
+              <div class="studio-3d-anchor" id="studio-3d-anchor"></div>
+
+              <div class="welcome-badge ascii-glitch">⚡ NEURAL STUDIO · READY</div>
+              <h2 class="welcome-title">
+                <span class="ascii-glitch">What would you like to</span> <span class="hero-title-accent ascii-glitch">create</span><span class="ascii-glitch">?</span>
+              </h2>
+              <p class="welcome-desc">Enter your specifications below. The 4-screen neural cluster will synthesize production-ready HTML, CSS &amp; JavaScript in real-time.</p>
               <div class="prompt-suggestions" id="prompt-suggestions">
-                <button class="suggestion-chip"
-                  data-prompt="Create a modern Netflix clone with dark theme, hero section, movie cards, and responsive layout">🎬
-                  Netflix Clone</button>
-                <button class="suggestion-chip"
-                  data-prompt="Build a modern banking management system with dashboard, transactions, and account management">🏦
-                  Banking System</button>
-                <button class="suggestion-chip"
-                  data-prompt="Create a beautiful restaurant website with menu, gallery, and reservations form">🍽️
-                  Restaurant Website</button>
-                <button class="suggestion-chip"
-                  data-prompt="Build a full e-commerce store with product grid, cart, and checkout">🛒 E-Commerce
-                  Store</button>
-                <button class="suggestion-chip"
-                  data-prompt="Create a stunning portfolio website with hero, projects, skills, and contact sections">💼
-                  Portfolio Website</button>
-                <button class="suggestion-chip"
-                  data-prompt="Build a modern SaaS landing page with pricing, features, and testimonials">🚀 SaaS
-                  Landing Page</button>
+                <button class="suggestion-chip" data-prompt="Create a modern Netflix clone with dark theme, hero section, and movie cards">🎬 Netflix Clone</button>
+                <button class="suggestion-chip" data-prompt="Build a clean banking management system with dashboard, transactions, and wallet">🏦 Banking Dashboard</button>
+                <button class="suggestion-chip" data-prompt="Create a beautiful restaurant website with menu, gallery, and contact form">🍽️ Restaurant Website</button>
+                <button class="suggestion-chip" data-prompt="Build a full e-commerce store with product grid, cart, and checkout">🛒 E-Commerce Store</button>
+                <button class="suggestion-chip" data-prompt="Create a modern portfolio website with about, projects, and contact">💼 Portfolio Website</button>
               </div>
             </div>
           </div>
 
-          <!-- Typing Indicator -->
           <div class="typing-indicator" id="typing-indicator" style="display:none">
-            <div class="typing-avatar">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
-                <path d="M12 2L18 8V20L12 24L6 20V8L12 2Z" fill="#5B8CFF" />
-              </svg>
-            </div>
-            <div class="typing-dots"><span></span><span></span><span></span></div>
+            <div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div>
+            <span class="typing-msg">AI is thinking and writing code...</span>
           </div>
 
-          <!-- Chat Input -->
           <div class="chat-input-area" id="chat-input-area">
             <div class="input-wrapper" id="input-wrapper">
-              <textarea id="prompt-input" class="prompt-textarea" placeholder="Describe the software you want to build…"
-                rows="1" aria-label="Software prompt"></textarea>
-              <div class="input-actions">
-                <div class="input-actions-left">
-                  <button class="btn-icon input-btn" id="voice-btn" title="Voice input">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                      <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z" />
-                      <path d="M19 10v2a7 7 0 0 1-14 0v-2" />
-                      <line x1="12" y1="19" x2="12" y2="23" />
-                      <line x1="8" y1="23" x2="16" y2="23" />
+              <textarea id="prompt-input" class="prompt-textarea" placeholder="Describe the app or feature you want to build—¦" rows="1"></textarea>
+              <div class="input-bottom-row">
+                <div class="input-bottom-left">
+                  <button class="btn-icon" id="voice-btn" title="Voice input">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
+                      <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+                      <line x1="12" y1="19" x2="12" y2="23"/>
+                      <line x1="8" y1="23" x2="16" y2="23"/>
                     </svg>
                   </button>
                 </div>
-                <div class="input-actions-right">
-                  <span class="char-counter" id="char-counter">0</span>
-                  <button class="btn-send" id="send-btn" disabled aria-label="Generate">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                      stroke-width="2.5">
-                      <line x1="22" y1="2" x2="11" y2="13" />
-                      <polygon points="22 2 15 22 11 13 2 9 22 2" />
+                <div class="input-bottom-right">
+                  <span class="char-count" id="char-counter">0</span>
+                  <button class="btn-send-round" id="send-btn" disabled aria-label="Send">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                      <line x1="22" y1="2" x2="11" y2="13"/>
+                      <polygon points="22 2 15 22 11 13 2 9 22 2"/>
                     </svg>
                   </button>
                 </div>
               </div>
             </div>
-            <p class="input-hint">AI can make mistakes. Review generated code before deploying to production.</p>
           </div>
         </main>
 
-        <!-- Right Status Panel (hidden in split mode) -->
         <aside class="sidebar-right" id="sidebar-right">
-          <div class="right-panel-header">
-            <h3>AI Status</h3>
-            <div class="status-indicator">
-              <span class="status-dot status-idle" id="ai-status-dot"></span>
-              <span class="status-text" id="ai-status-text">Ready</span>
+          <div class="right-header">Details</div>
+          <div class="right-body">
+            <div class="side-info-card">
+              <div class="card-label">MODEL</div>
+              <div class="card-value">Gemini Flash</div>
             </div>
-          </div>
-          <div class="right-panel-body">
-            <div class="info-card">
-              <div class="info-card-title">Model</div>
-              <div class="info-card-value"><span class="model-chip"><svg width="11" height="11" viewBox="0 0 24 24"
-                    fill="#5B8CFF">
-                    <path d="M12 2L18 8V20L12 24L6 20V8L12 2Z" />
-                  </svg> Gemini Flash Lite</span></div>
+            <div class="side-info-card">
+              <div class="card-label">GENERATION TIME</div>
+              <div class="card-value" id="gen-time-display">—</div>
             </div>
-            <div class="info-card">
-              <div class="info-card-title">Generation Time</div>
-              <div class="info-card-value" id="gen-time-display">—</div>
+            <div class="side-info-card">
+              <div class="card-label">TOKENS USED</div>
+              <div class="card-value" id="token-display">—</div>
             </div>
-            <div class="info-card">
-              <div class="info-card-title">Tokens Used</div>
-              <div class="info-card-value" id="token-display">—</div>
+            <div class="side-info-card" id="current-project-card" style="display:none">
+              <div class="card-label">PROJECT</div>
+              <div class="card-value" id="project-name-display">—</div>
             </div>
-            <div class="info-card" id="current-project-card" style="display:none">
-              <div class="info-card-title">Project</div>
-              <div class="info-card-value project-name-display" id="project-name-display">—</div>
+            <div class="side-info-card" id="files-info-card" style="display:none">
+              <div class="card-label">FILES</div>
+              <div class="card-value" id="files-count-display">—</div>
             </div>
-            <div class="info-card" id="files-info-card" style="display:none">
-              <div class="info-card-title">Files</div>
-              <div class="info-card-value" id="files-count-display">—</div>
-            </div>
-            <div class="info-card" id="lang-info-card" style="display:none">
-              <div class="info-card-title">Languages</div>
+            <div class="side-info-card" id="lang-info-card" style="display:none">
+              <div class="card-label">LANGUAGES</div>
               <div class="lang-tags" id="lang-tags-display"></div>
             </div>
           </div>
         </aside>
       </div>
     </div>
-  </div>
+  </div><!-- /#screen-app -->
 
-  <!-- External Libraries -->
+  <!-- Scripts -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/9.1.6/marked.min.js"></script>
+  
+  <!-- ═══════════════════════════════════════════════════════════════════
+       CYBER SYSTEM MODALS (About, Events, Sponsors, Pricing, Auth)
+       ═══════════════════════════════════════════════════════════════════ -->
+  <div class="cyber-modal-backdrop" id="system-modal" style="display:none">
+    <div class="cyber-modal-card" id="modal-card">
+      <div class="cyber-modal-header">
+        <div class="cyber-modal-badge">
+          <span class="cyber-badge-dot"></span>
+          <span id="modal-badge-text">SYS://NODE</span>
+        </div>
+        <button class="cyber-modal-close" id="modal-close-btn" aria-label="Close modal">&times;</button>
+      </div>
+      <h3 class="cyber-modal-title" id="modal-title">Title</h3>
+      <div class="cyber-modal-desc" id="modal-desc">Description</div>
+      <div id="modal-dynamic-body"></div>
+    </div>
+  </div>
+
   <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
 
-  <!-- App Modules -->
   <script src="utils.js"></script>
   <script src="animations.js"></script>
   <script src="theme.js"></script>
@@ -595,6 +752,16 @@ const app = create({
   <script src="preview.js"></script>
   <script src="zip.js"></script>
   <script src="app.js"></script>
-</body>
+  <script type="module" src="computer3d.js?v=2.4"></script>
 
+  <!-- Retro chip quick-fill -->
+  <script>
+    document.querySelectorAll('.retro-chip[data-prompt]').forEach(chip => {
+      chip.addEventListener('click', () => {
+        const ta = document.getElementById('hero-prompt-input');
+        if (ta) { ta.value = chip.dataset.prompt; ta.focus(); }
+      });
+    });
+  </script>
+</body>
 </html>
