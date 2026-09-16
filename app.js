@@ -506,20 +506,6 @@ function initNavigation() {
     document.getElementById('notch-link-events')?.click();
   });
 
-  document.getElementById('notch-link-sponsors')?.addEventListener('click', (e) => {
-    e.preventDefault();
-    openModal(
-      'SYS://PARTNERS',
-      'Sponsors & Core Stack',
-      'Engineered with cutting-edge open web technologies, Three.js WebGL rendering, and NETRUNNER-Ai inference.',
-      '<div class="about-grid"><div class="about-stat-card"><span class="about-stat-label">CORE AI</span><span class="about-stat-value">NETRUNNER-Ai</span></div><div class="about-stat-card"><span class="about-stat-label">3D ENGINE</span><span class="about-stat-value">Three.js WebGL</span></div></div>'
-    );
-  });
-  document.getElementById('mobile-nav-sponsors')?.addEventListener('click', (e) => {
-    e.preventDefault();
-    document.getElementById('notch-link-sponsors')?.click();
-  });
-
   document.getElementById('notch-login-btn')?.addEventListener('click', () => {
     openModal(
       'SYS://AUTH',
