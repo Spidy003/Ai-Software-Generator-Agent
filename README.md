@@ -1,8 +1,8 @@
-# 🚀 AI Software Generator
+# 🚀 NETRUNNER-Ai (AI Software Generator)
 
 > **Design. Generate. Build. Instantly.**
 
-A premium, production-quality AI-powered Software Engineering Workspace that lets you generate complete software projects from a single natural language prompt. Powered by Google Gemini AI.
+A premium, production-quality AI-powered Software Engineering Workspace that lets you generate complete software projects from a single natural language prompt. Powered by NETRUNNER-Ai.
 
 ---
 

@@ -483,8 +483,8 @@ function initNavigation() {
     openModal(
       'SYS://CLUSTER-SPEC',
       'About Neural Architecture',
-      'The AI Software Generator features a real-time multi-display rig running Gemini 2.5 Flash neural models with zero-latency browser compilation.',
-      '<div class="about-grid"><div class="about-stat-card"><span class="about-stat-label">DISPLAYS</span><span class="about-stat-value">4x CRT Matrix</span></div><div class="about-stat-card"><span class="about-stat-label">ENGINE</span><span class="about-stat-value">Gemini 2.5 Flash</span></div><div class="about-stat-card"><span class="about-stat-label">SYNTHESIS</span><span class="about-stat-value">HTML5 · CSS · JS</span></div><div class="about-stat-card"><span class="about-stat-label">LATENCY</span><span class="about-stat-value">14ms Pipeline</span></div></div>'
+      'The AI Software Generator features a real-time multi-display rig running NETRUNNER-Ai neural models with zero-latency browser compilation.',
+      '<div class="about-grid"><div class="about-stat-card"><span class="about-stat-label">DISPLAYS</span><span class="about-stat-value">4x CRT Matrix</span></div><div class="about-stat-card"><span class="about-stat-label">ENGINE</span><span class="about-stat-value">NETRUNNER-Ai</span></div><div class="about-stat-card"><span class="about-stat-label">SYNTHESIS</span><span class="about-stat-value">HTML5 · CSS · JS</span></div><div class="about-stat-card"><span class="about-stat-label">LATENCY</span><span class="about-stat-value">14ms Pipeline</span></div></div>'
     );
   });
   document.getElementById('mobile-nav-about')?.addEventListener('click', (e) => {
@@ -511,8 +511,8 @@ function initNavigation() {
     openModal(
       'SYS://PARTNERS',
       'Sponsors & Core Stack',
-      'Engineered with cutting-edge open web technologies, Three.js WebGL rendering, and Gemini AI inference.',
-      '<div class="about-grid"><div class="about-stat-card"><span class="about-stat-label">CORE AI</span><span class="about-stat-value">Google Gemini</span></div><div class="about-stat-card"><span class="about-stat-label">3D ENGINE</span><span class="about-stat-value">Three.js WebGL</span></div></div>'
+      'Engineered with cutting-edge open web technologies, Three.js WebGL rendering, and NETRUNNER-Ai inference.',
+      '<div class="about-grid"><div class="about-stat-card"><span class="about-stat-label">CORE AI</span><span class="about-stat-value">NETRUNNER-Ai</span></div><div class="about-stat-card"><span class="about-stat-label">3D ENGINE</span><span class="about-stat-value">Three.js WebGL</span></div></div>'
     );
   });
   document.getElementById('mobile-nav-sponsors')?.addEventListener('click', (e) => {

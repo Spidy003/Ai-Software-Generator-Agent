@@ -89,7 +89,7 @@ function initComputer3D() {
         '>> STACK TRACE LOG:',
         '   0x00F7A: core_pipeline.sys -> ILLEGAL_OPCODE',
         '   0x00F82: neural_synthesis.dll -> MEMORY_PANIC',
-        '   0x00F9C: gemini_bridge.sys -> NULL_PTR_DEREFERENCE',
+        '   0x00F9C: netrunner_bridge.sys -> NULL_PTR_DEREFERENCE',
         '   0x00FA4: crt_framebuffer.bin -> UNCAUGHT_OVERFLOW',
         '>> RAW MEM DUMP: B8 00 1F ?? FF ?? 33 C0 C3 ?? 89 E5 90 90',
         '>> ERROR CODE: 0xC0000005 (ACCESS_VIOLATION)',
@@ -581,7 +581,7 @@ function initComputer3D() {
     const logs = [
       '>> INITIALIZING NEURAL CODE SYNTHESIS ENGINE...',
       `>> ATTACHING COMPILER PIPELINE TO CRT #${partIndex + 1} ... OK`,
-      `>> MOUNTING GEMINI 2.5 FLASH BACKPLANE ... OK`,
+      `>> MOUNTING NETRUNNER-AI FLASH BACKPLANE ... OK`,
       `>> DECRYPTING HTML5/CSS/JS SOURCE TREE ... ${pct}%`,
       pct > 50 ? '>> COMPILER SUBSYSTEM ONLINE. SYNCING CRT BUFFERS...' : '>> SYNCHRONIZING PARALLEL BUS...',
       pct > 80 ? '>> SYSTEM RESTORED. COMPILER CODESTREAM ACTIVE.' : '>> RESOLVING DEPENDENCIES...'

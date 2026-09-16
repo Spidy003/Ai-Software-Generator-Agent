@@ -20,7 +20,7 @@ function initHudTicker() {
   const logs = [
     "Neural pipeline listening. Enter prompt on the right to synthesize complete web software...",
     "4x Display Pods synchronized on channel 01 [HTML5/CSS3/JS stream active]...",
-    "Gemini 2.5 Flash neural core ready. Response latency: 14ms...",
+    "NETRUNNER-Ai neural core ready. Response latency: 14ms...",
     "Direct browser compilation primed. Live preview sandbox ready...",
     "Prompt suggestion chips available: Netflix, Banking, Restaurant, Store, Portfolio..."
   ];

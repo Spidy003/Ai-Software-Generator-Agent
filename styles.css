@@ -394,7 +394,7 @@ input, textarea {
 .notch-slice-center {
   flex: 1;
   min-width: 560px;
-  max-width: 820px;
+  max-width: 900px;
   height: 64px;
   position: relative;
   margin-left: -1px;
@@ -547,6 +547,18 @@ input, textarea {
   font-size: 0.84rem;
   letter-spacing: 0.08em;
   color: var(--text-primary);
+  display: flex;
+  align-items: baseline;
+}
+
+.notch-logo-sub {
+  font-family: var(--font-mono);
+  font-size: 0.65em;
+  font-weight: 500;
+  letter-spacing: 0.03em;
+  color: var(--text-dim);
+  margin-left: 5px;
+  white-space: nowrap;
 }
 
 /* Divider line */
