@@ -520,20 +520,6 @@ function initNavigation() {
     document.getElementById('notch-link-sponsors')?.click();
   });
 
-  document.getElementById('notch-link-pricing')?.addEventListener('click', (e) => {
-    e.preventDefault();
-    openModal(
-      'SYS://TIERS',
-      'Pipeline Pricing & Tiers',
-      'Choose the computation power and throughput for your development workflow.',
-      '<div class="about-grid"><div class="about-stat-card"><span class="about-stat-label">COMMUNITY</span><span class="about-stat-value">Free / Unlimited</span></div><div class="about-stat-card"><span class="about-stat-label">ENTERPRISE</span><span class="about-stat-value">Custom Workflows</span></div></div>'
-    );
-  });
-  document.getElementById('mobile-nav-pricing')?.addEventListener('click', (e) => {
-    e.preventDefault();
-    document.getElementById('notch-link-pricing')?.click();
-  });
-
   document.getElementById('notch-login-btn')?.addEventListener('click', () => {
     openModal(
       'SYS://AUTH',
