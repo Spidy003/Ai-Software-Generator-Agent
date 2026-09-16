@@ -6,10 +6,10 @@
 
 const APIManager = (() => {
   const STORAGE_KEY = 'aisg-api-key';
-  const MODEL_ID = 'gemini-3.8-flash';
+  const MODEL_ID = 'gemini-3.6-flash';
   const API_BASE = 'https://generativelanguage.googleapis.com/v1beta/models';
   const DEFAULT_KEY = ''; // Enter your API key in the settings panel
-  
+
   let apiKey = DEFAULT_KEY;
 
   let isGenerating = false;
